@@ -1020,65 +1020,67 @@ lav_model_partable  <- function(
           }
         } # loadings
 
-        if ("thresholds" %in% effect_coding &&
-            (!"thresholds" %in% group.equal || this_group == 1L)) {
+        if ("thresholds" %in% effect_coding) {
           thresholds_idx <- which(tmp_list$op == "|" &
-            tmp_list$block == b &
-            tmp_list$lhs %in% ind_names)
+                                  tmp_list$block == b &
+                                  tmp_list$lhs %in% ind_names)
 
-          # all free?
-          if (length(thresholds_idx) > 0L &&
-            all(tmp_list$free[thresholds_idx] > 0L)) {
-            nlevs <- table(tmp_list$lhs[thresholds_idx]) + 1
-            kmax <- max(nlevs)
-            for (ind in ind_names) {
-              # 1) fix bottom and top per ov
-              trows <- which(tmp_list$lhs[thresholds_idx] == ind)
-              thisidx <- thresholds_idx[trows[1]]
-              tmp_list$free[thisidx] <- 0L
-              tmp_list$ustart[thisidx] <- round(.5 + kmax / nlevs[ind], 3)
-              tmp_list$user[thisidx] <- 2L
-
-              if (nlevs[ind] > 2L) {
-                thisidx <- thresholds_idx[trows[length(trows)]]
+          nlevs <- table(tmp_list$lhs[thresholds_idx]) + 1
+          kmax <- max(nlevs)
+          
+          if (!"thresholds" %in% group.equal || this_group == 1L) {
+            # all free?
+            if (length(thresholds_idx) > 0L && all(tmp_list$free[thresholds_idx] > 0L)) {
+              for (ind in ind_names) {
+                # 1) fix bottom and top per ov
+                trows <- which(tmp_list$lhs[thresholds_idx] == ind)
+                thisidx <- thresholds_idx[trows[1]]
                 tmp_list$free[thisidx] <- 0L
-                tmp_list$ustart[thisidx] <- round(.5 + kmax * (nlevs[ind] - 1) /
-                    nlevs[ind], 3)
+                tmp_list$ustart[thisidx] <- round(.5 + kmax / nlevs[ind], 3)
                 tmp_list$user[thisidx] <- 2L
-              }
 
-              # 2) free intercepts of variables with > 2 levels,
-              #                     only if automatically fixed
-              intercept_idx <- which(tmp_list$op == "~1" &
-                tmp_list$block == b &
-                tmp_list$lhs == ind)
-              if (nlevs[ind] > 2L && length(intercept_idx) > 0L &&
-                  tmp_list$user[intercept_idx] == 0L) {
-                tmp_list$free[intercept_idx] <- 1L
-              }
-
-              # 3) free variances/deltas of variables with > 2 levels,
-              #                           only if automatically fixed
-              varop <- ifelse(parameterization == "delta", "~*~", "~~")
-              var_idx <- which(tmp_list$op == varop &
-                            tmp_list$block == b &
-                            tmp_list$lhs == ind &
-                            tmp_list$lhs == tmp_list$rhs)
-              if (length(var_idx) > 0L &&
-                  tmp_list$user[var_idx] == 0L) {
-                tmp_list$free[var_idx] <- 1L
+                if (nlevs[ind] > 2L) {
+                  thisidx <- thresholds_idx[trows[length(trows)]]
+                  tmp_list$free[thisidx] <- 0L
+                  tmp_list$ustart[thisidx] <- round(.5 + kmax * (nlevs[ind] - 1) /
+                                                    nlevs[ind], 3)
+                  tmp_list$user[thisidx] <- 2L
+                }
               }
             }
-            # 4) fix latent variance if all variables have 2 levels
-            if (all(nlevs == 2L)) {
-              lv_var_idx <- which(tmp_list$op == "~~" &
-                              tmp_list$block == b &
-                              tmp_list$lhs == lv &
-                              tmp_list$lhs == tmp_list$rhs)
-              if (length(lv_var_idx) > 0L && tmp_list$user[lv_var_idx] == 0L) {
-                tmp_list$free[lv_var_idx] <- 0L
-                tmp_list$ustart[lv_var_idx] <- 1L
-              }
+          }
+
+          for (ind in ind_names) {
+            # 2) free intercepts of variables with > 2 levels,
+            #                     only if automatically fixed
+            intercept_idx <- which(tmp_list$op == "~1" &
+                tmp_list$block == b &
+                tmp_list$lhs == ind)
+            if (nlevs[ind] > 2L && length(intercept_idx) > 0L &&
+                tmp_list$user[intercept_idx] == 0L) {
+              tmp_list$free[intercept_idx] <- 1L
+            }
+
+            # 3) free variances/deltas of variables with > 2 levels,
+            #                           only if automatically fixed
+            varop <- ifelse(parameterization == "delta", "~*~", "~~")
+            var_idx <- which(tmp_list$op == varop &
+                          tmp_list$block == b &
+                          tmp_list$lhs == ind &
+                          tmp_list$lhs == tmp_list$rhs)
+            if (length(var_idx) > 0L && tmp_list$user[var_idx] == 0L) {
+                 tmp_list$free[var_idx] <- 1L
+            }
+          }
+          # 4) fix latent variance if all variables have 2 levels
+          if (all(nlevs == 2L)) {
+            lv_var_idx <- which(tmp_list$op == "~~" &
+                                tmp_list$block == b &
+                                tmp_list$lhs == lv &
+                                tmp_list$lhs == tmp_list$rhs)
+            if (length(lv_var_idx) > 0L && tmp_list$user[lv_var_idx] == 0L) {
+              tmp_list$free[lv_var_idx] <- 0L
+              tmp_list$ustart[lv_var_idx] <- 1L
             }
           }
         } # thresholds
@@ -1124,6 +1126,24 @@ lav_model_partable  <- function(
               tmp_list$free[lv_int_idx] <- 1L
             }
           }
+        } else if ("intercepts" %in% effect_coding &&
+                   "intercepts" %in% group.equal &&
+                   this_group > 1L) {
+          ## add equality constraints of the newly-freed intercepts
+          intercepts_idx <- which(tmp_list$op == "~1" &
+                                  tmp_list$block == b &
+                                  tmp_list$lhs %in% ind_names)
+          intercepts_idx_g1 <- which(tmp_list$op == "~1" &
+                                     tmp_list$block == (1L + b%%2) &
+                                     tmp_list$lhs %in% ind_names)
+          ncon <- length(intercepts_idx)
+
+          tmp$lhs <- c(tmp$lhs, tmp_list$plabel[intercepts_idx_g1])
+          tmp$op <- c(tmp$op, rep("==", ncon))
+          tmp$rhs <- c(tmp$rhs, tmp_list$plabel[intercepts_idx])
+          tmp$block <- c(tmp$block, rep(0L, ncon))
+          tmp$user <- c(tmp$user, rep(2L, ncon))
+          tmp$ustart <- c(tmp$ustart, rep(as.numeric(NA), ncon))
         } # intercepts
       } # lv
     } # blocks
