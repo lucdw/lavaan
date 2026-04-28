@@ -59,8 +59,8 @@ lav_mvnorm_dmvnorm <- function(Y = NULL,
     } else {
       if (is.null(Sigma.inv)) {
         Sigma.inv <- lav_matrix_symmetric_inverse(
-          S = Sigma,
-          logdet = TRUE, Sinv.method = Sinv.method
+          s = Sigma,
+          logdet = TRUE, sinv_method = Sinv.method
         )
         logdet <- attr(Sigma.inv, "logdet")
       } else {
@@ -158,8 +158,8 @@ lav_mvnorm_loglik_data <- function(Y = NULL,
       logdet <- -2 * sum(log(diag(icS)))
     } else {
       Sigma.inv <- lav_matrix_symmetric_inverse(
-        S = Sigma, logdet = TRUE,
-        Sinv.method = Sinv.method
+        s = Sigma, logdet = TRUE,
+        sinv_method = Sinv.method
       )
       logdet <- attr(Sigma.inv, "logdet")
       # mahalanobis distance
@@ -176,8 +176,8 @@ lav_mvnorm_loglik_data <- function(Y = NULL,
   } else {
     # invert Sigma
     Sigma.inv <- lav_matrix_symmetric_inverse(
-      S = Sigma, logdet = TRUE,
-      Sinv.method = Sinv.method
+      s = Sigma, logdet = TRUE,
+      sinv_method = Sinv.method
     )
     if (!is.null(wt)) {
       out <- stats::cov.wt(Y, wt = wt, method = "ML")
@@ -240,8 +240,8 @@ lav_mvnorm_loglik_samplestats <- function(sample.mean = NULL,
 
   if (is.null(Sigma.inv)) {
     Sigma.inv <- lav_matrix_symmetric_inverse(
-      S = Sigma, logdet = TRUE,
-      Sinv.method = Sinv.method
+      s = Sigma, logdet = TRUE,
+      sinv_method = Sinv.method
     )
     logdet <- attr(Sigma.inv, "logdet")
   } else {
@@ -346,8 +346,8 @@ lav_mvnorm_dlogl_dmu <- function(Y = NULL,
   if (is.null(Sigma.inv)) {
     # invert Sigma
     Sigma.inv <- lav_matrix_symmetric_inverse(
-      S = Sigma, logdet = FALSE,
-      Sinv.method = Sinv.method
+      s = Sigma, logdet = FALSE,
+      sinv_method = Sinv.method
     )
   }
 
@@ -389,8 +389,8 @@ lav_mvnorm_dlogl_dSigma <- function(Y = NULL,
   if (is.null(Sigma.inv)) {
     # invert Sigma
     Sigma.inv <- lav_matrix_symmetric_inverse(
-      S = Sigma, logdet = FALSE,
-      Sinv.method = Sinv.method
+      s = Sigma, logdet = FALSE,
+      sinv_method = Sinv.method
     )
   }
 
@@ -437,8 +437,8 @@ lav_mvnorm_dlogl_dvechSigma <- function(Y = NULL,
   if (is.null(Sigma.inv)) {
     # invert Sigma
     Sigma.inv <- lav_matrix_symmetric_inverse(
-      S = Sigma, logdet = FALSE,
-      Sinv.method = Sinv.method
+      s = Sigma, logdet = FALSE,
+      sinv_method = Sinv.method
     )
   }
 
@@ -487,8 +487,8 @@ lav_mvnorm_dlogl_dmu_dvechsigma <- function(m_y = NULL,
   if (is.null(sigma_inv)) {
     # invert Sigma
     sigma_inv <- lav_matrix_symmetric_inverse(
-      S = m_sigma, logdet = FALSE,
-      Sinv.method = sinv_method
+      s = m_sigma, logdet = FALSE,
+      sinv_method = sinv_method
     )
   }
 
@@ -539,8 +539,8 @@ lav_mvnorm_scores_mu <- function(Y = NULL,
   if (is.null(Sigma.inv)) {
     # invert Sigma
     Sigma.inv <- lav_matrix_symmetric_inverse(
-      S = Sigma, logdet = FALSE,
-      Sinv.method = Sinv.method
+      s = Sigma, logdet = FALSE,
+      sinv_method = Sinv.method
     )
   }
 
@@ -577,8 +577,8 @@ lav_mvnorm_scores_vech_sigma <- function(Y = NULL,
   if (is.null(Sigma.inv)) {
     # invert Sigma
     Sigma.inv <- lav_matrix_symmetric_inverse(
-      S = Sigma, logdet = FALSE,
-      Sinv.method = Sinv.method
+      s = Sigma, logdet = FALSE,
+      sinv_method = Sinv.method
     )
   }
 
@@ -629,8 +629,8 @@ lav_mvnorm_scores_mu_vech_sigma <- function(Y = NULL,
   if (is.null(Sigma.inv)) {
     # invert Sigma
     Sigma.inv <- lav_matrix_symmetric_inverse(
-      S = Sigma, logdet = FALSE,
-      Sinv.method = Sinv.method
+      s = Sigma, logdet = FALSE,
+      sinv_method = Sinv.method
     )
   }
 
@@ -738,8 +738,8 @@ lav_mvnorm_information_expected <- function(Y = NULL, # unused!
   if (is.null(Sigma.inv)) {
     # invert Sigma
     Sigma.inv <- lav_matrix_symmetric_inverse(
-      S = Sigma, logdet = FALSE,
-      Sinv.method = Sinv.method
+      s = Sigma, logdet = FALSE,
+      sinv_method = Sinv.method
     )
   }
 
@@ -828,8 +828,8 @@ lav_mvnorm_information_observed_samplestats <- function(
   if (is.null(Sigma.inv)) {
     # invert Sigma
     Sigma.inv <- lav_matrix_symmetric_inverse(
-      S = Sigma, logdet = FALSE,
-      Sinv.method = Sinv.method
+      s = Sigma, logdet = FALSE,
+      sinv_method = Sinv.method
     )
   }
 
@@ -862,7 +862,7 @@ lav_mvnorm_information_observed_samplestats <- function(
   if (length(x.idx) > 0L) {
     not.x <- lav_matrix_vech_which_idx(
       n = NCOL(Sigma.inv), idx = x.idx,
-      add.idx.at.start = meanstructure
+      add_idx_at_start = meanstructure
     )
     out[, not.x] <- 0
     out[not.x, ] <- 0

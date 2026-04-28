@@ -114,8 +114,8 @@ lav_mvnorm_cluster_missing_loglik_samplestats_2l <- function(Y1 = NULL,
       if (length(z.na.idx) > 0L) {
         zp <- sigma.zz[-z.na.idx, -z.na.idx, drop = FALSE]
         zp.inv <- lav_matrix_symmetric_inverse_update(
-          S.inv = sigma.zz.inv, rm.idx = z.na.idx,
-          logdet = TRUE, S.logdet = sigma.zz.logdet
+          s_inv = sigma.zz.inv, rm_idx = z.na.idx,
+          logdet = TRUE, s_logdet = sigma.zz.logdet
         )
         zp.logdet <- attr(zp.inv, "logdet")
         sigma.j.zz.logdet <- sigma.j.zz.logdet + (zp.logdet * freq)
@@ -161,8 +161,8 @@ lav_mvnorm_cluster_missing_loglik_samplestats_2l <- function(Y1 = NULL,
       #MPi[Mp$case.idx[[p]]] <- p
       wp <- sigma.w[-na.idx, -na.idx, drop = FALSE]
       wp.inv <- lav_matrix_symmetric_inverse_update(
-        S.inv = sigma.w.inv, rm.idx = na.idx,
-        logdet = TRUE, S.logdet = sigma.w.logdet
+        s_inv = sigma.w.inv, rm_idx = na.idx,
+        logdet = TRUE, s_logdet = sigma.w.logdet
       )
       wp.logdet <- attr(wp.inv, "logdet")
       W.logdet <- W.logdet + (wp.logdet * freq)
@@ -343,7 +343,7 @@ lav_mvnorm_cluster_missing_dlogl_2l_samplestats <- function(
       if (length(z.na.idx) > 0L) {
         zp <- sigma.zz[-z.na.idx, -z.na.idx, drop = FALSE]
         zp.inv <- lav_matrix_symmetric_inverse_update(
-          S.inv = sigma.zz.inv, rm.idx = z.na.idx,
+          s_inv = sigma.zz.inv, rm_idx = z.na.idx,
           logdet = FALSE
         )
         ZIP[[p]][-z.na.idx, -z.na.idx] <- zp.inv
@@ -385,7 +385,7 @@ lav_mvnorm_cluster_missing_dlogl_2l_samplestats <- function(
     if (length(na.idx) > 0L) {
       MPi[Mp$case.idx[[p]]] <- p
       wp.inv <- lav_matrix_symmetric_inverse_update(
-        S.inv = sigma.w.inv, rm.idx = na.idx,
+        s_inv = sigma.w.inv, rm_idx = na.idx,
         logdet = FALSE
       )
       WIP[[p]][-na.idx, -na.idx] <- wp.inv
@@ -700,7 +700,7 @@ lav_mvnorm_cluster_missing_scores_2l <- function(
       if (length(z.na.idx) > 0L) {
         zp <- sigma.zz[-z.na.idx, -z.na.idx, drop = FALSE]
         zp.inv <- lav_matrix_symmetric_inverse_update(
-          S.inv = sigma.zz.inv, rm.idx = z.na.idx,
+          s_inv = sigma.zz.inv, rm_idx = z.na.idx,
           logdet = FALSE
         )
         ZIP[[p]][-z.na.idx, -z.na.idx] <- zp.inv
@@ -742,7 +742,7 @@ lav_mvnorm_cluster_missing_scores_2l <- function(
     if (length(na.idx) > 0L) {
       MPi[Mp$case.idx[[p]]] <- p
       wp.inv <- lav_matrix_symmetric_inverse_update(
-        S.inv = sigma.w.inv, rm.idx = na.idx,
+        s_inv = sigma.w.inv, rm_idx = na.idx,
         logdet = FALSE
       )
       WIP[[p]][-na.idx, -na.idx] <- wp.inv

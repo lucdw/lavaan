@@ -231,16 +231,16 @@ lav_mvnorm_cluster_loglik_samplestats_2l <- function(YLp = NULL,
 
   # common parts:
   sigma.w.inv <- lav_matrix_symmetric_inverse(
-    S = sigma.w,
-    logdet = TRUE, Sinv.method = Sinv.method
+    s = sigma.w,
+    logdet = TRUE, sinv_method = Sinv.method
   )
   sigma.w.logdet <- attr(sigma.w.inv, "logdet")
   attr(sigma.w.inv, "logdet") <- NULL
 
   if (length(between.idx) > 0L) {
     sigma.zz.inv <- lav_matrix_symmetric_inverse(
-      S = sigma.zz,
-      logdet = TRUE, Sinv.method = Sinv.method
+      s = sigma.zz,
+      logdet = TRUE, sinv_method = Sinv.method
     )
     sigma.zz.logdet <- attr(sigma.zz.inv, "logdet")
     attr(sigma.zz.inv, "logdet") <- NULL
@@ -275,8 +275,8 @@ lav_mvnorm_cluster_loglik_samplestats_2l <- function(YLp = NULL,
     # construct sigma.j
     sigma.j <- (nj * sigma.b.z) + sigma.w
     sigma.j.inv <- lav_matrix_symmetric_inverse(
-      S = sigma.j,
-      logdet = TRUE, Sinv.method = Sinv.method
+      s = sigma.j,
+      logdet = TRUE, sinv_method = Sinv.method
     )
     sigma.j.logdet <- attr(sigma.j.inv, "logdet")
     attr(sigma.j.inv, "logdet") <- NULL
@@ -287,8 +287,8 @@ lav_mvnorm_cluster_loglik_samplestats_2l <- function(YLp = NULL,
       # return(as.numeric(NA))
       # FORCE?
       # sigma.j <- lav_matrix_symmetric_force_pd(sigma.j)
-      # sigma.j.inv <- lav_matrix_symmetric_inverse(S = sigma.j,
-      #           logdet = TRUE, Sinv.method = Sinv.method)
+      # sigma.j.inv <- lav_matrix_symmetric_inverse(s = sigma.j,
+      #           logdet = TRUE, sinv_method = Sinv.method)
       # sigma.j.logdet <- attr(sigma.j.inv, "logdet")
       # attr(sigma.j.inv, "logdet") <- NULL
     }
@@ -392,8 +392,8 @@ lav_mvnorm_cluster_dlogl_2l_samplestats <- function(YLp = NULL,
 
   # common parts:
   sigma.w.inv <- lav_matrix_symmetric_inverse(
-    S = sigma.w,
-    logdet = FALSE, Sinv.method = Sinv.method
+    s = sigma.w,
+    logdet = FALSE, sinv_method = Sinv.method
   )
 
   # both level-1 and level-2
@@ -410,8 +410,8 @@ lav_mvnorm_cluster_dlogl_2l_samplestats <- function(YLp = NULL,
     G.Sigma.yz <- matrix(0, ncluster.sizes, length(lav_matrix_vec(sigma.yz)))
 
     sigma.zz.inv <- lav_matrix_symmetric_inverse(
-      S = sigma.zz,
-      logdet = FALSE, Sinv.method = Sinv.method
+      s = sigma.zz,
+      logdet = FALSE, sinv_method = Sinv.method
     )
     sigma.yz.zi <- sigma.yz %*% sigma.zz.inv
     sigma.zi.zy <- t(sigma.yz.zi)
@@ -438,8 +438,8 @@ lav_mvnorm_cluster_dlogl_2l_samplestats <- function(YLp = NULL,
       # construct sigma.j
       sigma.j <- (nj * sigma.b.z) + sigma.w
       sigma.j.inv <- lav_matrix_symmetric_inverse(
-        S = sigma.j,
-        logdet = FALSE, Sinv.method = Sinv.method
+        s = sigma.j,
+        logdet = FALSE, sinv_method = Sinv.method
       )
       sigma.ji.yz.zi <- sigma.j.inv %*% sigma.yz.zi
       sigma.zi.zy.ji <- t(sigma.ji.yz.zi)
@@ -528,8 +528,8 @@ lav_mvnorm_cluster_dlogl_2l_samplestats <- function(YLp = NULL,
       # construct sigma.j
       sigma.j <- (nj * sigma.b) + sigma.w
       sigma.j.inv <- lav_matrix_symmetric_inverse(
-        S = sigma.j,
-        logdet = FALSE, Sinv.method = Sinv.method
+        s = sigma.j,
+        logdet = FALSE, sinv_method = Sinv.method
       )
       # common part
       jYYj <- nj * sigma.j.inv %*% Y2Yc.yy %*% sigma.j.inv
@@ -640,8 +640,8 @@ lav_mvnorm_cluster_scores_2l <- function(Y1 = NULL,
 
   # common parts:
   sigma.w.inv <- lav_matrix_symmetric_inverse(
-    S = sigma.w,
-    logdet = FALSE, Sinv.method = Sinv.method
+    s = sigma.w,
+    logdet = FALSE, sinv_method = Sinv.method
   )
 
   # both level-1 and level-2
@@ -654,8 +654,8 @@ lav_mvnorm_cluster_scores_2l <- function(Y1 = NULL,
 
   if (length(between.idx) > 0L) {
     sigma.zz.inv <- lav_matrix_symmetric_inverse(
-      S = sigma.zz,
-      logdet = FALSE, Sinv.method = Sinv.method
+      s = sigma.zz,
+      logdet = FALSE, sinv_method = Sinv.method
     )
     sigma.yz.zi <- sigma.yz %*% sigma.zz.inv
     sigma.zi.zy <- t(sigma.yz.zi)
@@ -689,8 +689,8 @@ lav_mvnorm_cluster_scores_2l <- function(Y1 = NULL,
       # construct sigma.j
       sigma.j <- (nj * sigma.b.z) + sigma.w
       sigma.j.inv <- lav_matrix_symmetric_inverse(
-        S = sigma.j,
-        logdet = FALSE, Sinv.method = Sinv.method
+        s = sigma.j,
+        logdet = FALSE, sinv_method = Sinv.method
       )
       sigma.ji.yz.zi <- sigma.j.inv %*% sigma.yz.zi
       sigma.zi.zy.ji <- t(sigma.ji.yz.zi)
@@ -769,8 +769,8 @@ lav_mvnorm_cluster_scores_2l <- function(Y1 = NULL,
       # construct sigma.j
       sigma.j <- (nj * sigma.b) + sigma.w
       sigma.j.inv <- lav_matrix_symmetric_inverse(
-        S = sigma.j,
-        logdet = FALSE, Sinv.method = Sinv.method
+        s = sigma.j,
+        logdet = FALSE, sinv_method = Sinv.method
       )
       # common part
       jYYj <- nj * sigma.j.inv %*% Y2Yc.yy %*% sigma.j.inv
@@ -1024,8 +1024,8 @@ lav_mvnorm_cluster_information_expected <- function(Lp = NULL,
   }
 
   Sigma.W.inv <- lav_matrix_symmetric_inverse(
-    S = Sigma.W, logdet = FALSE,
-    Sinv.method = Sinv.method
+    s = Sigma.W, logdet = FALSE,
+    sinv_method = Sinv.method
   )
   # create Sigma.W.inv.tilde
   Sigma.W.inv.tilde <- matrix(0, p.tilde, p.tilde)
@@ -1181,8 +1181,8 @@ lav_mvnorm_cluster_information_expected_delta <- function(Lp = NULL,
 
 
   Sigma.W.inv <- lav_matrix_symmetric_inverse(
-    S = sigma.w, logdet = FALSE,
-    Sinv.method = Sinv.method
+    s = sigma.w, logdet = FALSE,
+    sinv_method = Sinv.method
   )
   I11.w <- Sigma.W.inv
   # if (lav_use_lavaanC()) {

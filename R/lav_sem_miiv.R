@@ -890,8 +890,8 @@ lav_sem_miiv_vcov <- function(lavmodel = NULL, lavsamplestats = NULL,
         # vcov = K %*% Gamma_NT %*% t(K)
         # k_gammant_kt <- jac_k %*% gamma_big %*% t(jac_k)
         x.idx <- if (lavmodel@fixed.x) lavsamplestats@x.idx[[1]] else integer(0L)
-        k_gammant_kt <- lav_matrix_k_gammant_kt(K = jac_k, S = cov_g,
-          meanstructure = lavmodel@meanstructure, x.idx = x.idx)
+        k_gammant_kt <- lav_matrix_k_gammant_kt(m_k = jac_k, s = cov_g,
+          meanstructure = lavmodel@meanstructure, x_idx = x.idx)
         vcov[free.directed.idx, free.directed.idx] <-
           k_gammant_kt / lavsamplestats@ntotal
       }
@@ -1034,8 +1034,8 @@ lav_sem_miiv_vcov <- function(lavmodel = NULL, lavsamplestats = NULL,
       } else {
         x.idx <-
           if (lavmodel@fixed.x) lavsamplestats@x.idx[[1]] else integer(0L)
-        tmp_gammant_tmpt <- lav_matrix_k_gammant_kt(K = tmp, S = cov_g,
-          meanstructure = lavmodel@meanstructure, x.idx = x.idx)
+        tmp_gammant_tmpt <- lav_matrix_k_gammant_kt(m_k = tmp, s = cov_g,
+          meanstructure = lavmodel@meanstructure, x_idx = x.idx)
         #tmp_gammant_tmpt_bis <- tmp %*% gamma_big %*% t(tmp)
         vcov[free.undirected.idx, free.undirected.idx] <-
           tmp_gammant_tmpt / lavsamplestats@ntotal
@@ -1151,8 +1151,8 @@ lav_sem_miiv_vcov <- function(lavmodel = NULL, lavsamplestats = NULL,
         # )
       }
       x.idx <- if (lavmodel@fixed.x) lavsamplestats@x.idx[[1]] else integer(0L)
-      jacb_gammant_jacbt <- lav_matrix_k_gammant_kt(K = jac_b, S = cov_g,
-        meanstructure = lavmodel@meanstructure, x.idx = x.idx)
+      jacb_gammant_jacbt <- lav_matrix_k_gammant_kt(m_k = jac_b, s = cov_g,
+        meanstructure = lavmodel@meanstructure, x_idx = x.idx)
       #jacb_gammant_jacbt_bis <- jac_b %*% gamma_big %*% t(jac_b)
       vcov_b <- jacb_gammant_jacbt / lavsamplestats@ntotal
       vcov_ab <- vcov_a + vcov_b

@@ -158,10 +158,10 @@ lav_model_efa_rotate_x <- function(x, lavmodel = NULL, lavoptions = NULL,
           on.exit(lav_verbose(current.verbose), TRUE)
         # rotate this set
         res <- lav_matrix_rotate(
-          A = A,
+          a = A,
           orthogonal = ropts$orthogonal,
           method = method,
-          method.args = list(
+          method_args = list(
             geomin.epsilon = ropts$geomin.epsilon,
             orthomax.gamma = ropts$orthomax.gamma,
             cf.gamma       = ropts$orthomax.gamma,
@@ -170,19 +170,19 @@ lav_model_efa_rotate_x <- function(x, lavmodel = NULL, lavoptions = NULL,
             target         = ropts$target,
             target.mask    = ropts$target.mask
           ),
-          init.ROT = init.ROT,
-          init.ROT.check = FALSE,
+          init_rot = init.ROT,
+          init_rot_check = FALSE,
           rstarts = rstarts,
-          row.weights = ropts$row.weights,
-          std.ov = ropts$std.ov,
-          ov.var = this.ov.var,
+          row_weights = ropts$row.weights,
+          std_ov = ropts$std.ov,
+          ov_var = this.ov.var,
           algorithm = ropts$algorithm,
           reflect = ropts$reflect,
-          order.lv.by = ropts$order.lv.by,
-          gpa.tol = ropts$gpa.tol,
+          order_lv_by = ropts$order.lv.by,
+          gpa_tol = ropts$gpa.tol,
           tol = ropts$tol,
-          max.iter = ropts$max.iter,
-  		group = g
+          max_iter = ropts$max.iter,
+  		    group = g
         )
 
         # extract rotation matrix (note, in Asp & Muthen, 2009; this is H')
@@ -340,10 +340,10 @@ lav_model_efa_rotate_x <- function(x, lavmodel = NULL, lavoptions = NULL,
 
       # rotate this set
       res <- lav_matrix_rotate_mg(
-        Alist = Alist,
+        a_list = Alist,
         orthogonal = ropts$orthogonal,
         method = method,
-        method.args = list(
+        method_args = list(
           geomin.epsilon = ropts$geomin.epsilon,
           orthomax.gamma = ropts$orthomax.gamma,
           cf.gamma       = ropts$orthomax.gamma,
@@ -352,20 +352,20 @@ lav_model_efa_rotate_x <- function(x, lavmodel = NULL, lavoptions = NULL,
           target         = ropts$target,
           target.mask    = ropts$target.mask
         ),
-        init.rotList = init.rotList,
-        init.ROT.check = FALSE,
+        init_rot_list = init.rotList,
+        init_rot_check = FALSE,
         rstarts = rstarts,
         #row.weights = ropts$row.weights,
         #std.ov = ropts$std.ov,
         #ov.var = this.ov.var,
-        mg.algorithm = ropts$mg.agreement.algorithm,
-        mg.agreement.method = ropts$mg.agreement.method,
-        mg.agreement.weight = ropts$mg.agreement.weight,
+        mg_algorithm = ropts$mg.agreement.algorithm,
+        mg_agreement_method = ropts$mg.agreement.method,
+        mg_agreement_weight = ropts$mg.agreement.weight,
         reflect = ropts$reflect,
-        order.lv.by = ropts$order.lv.by,
+        order_lv_by = ropts$order.lv.by,
         #gpa.tol = ropts$gpa.tol,
         tol = ropts$tol,
-        max.iter = ropts$max.iter
+        max_iter = ropts$max.iter
       )
       for (g in seq_len(lavmodel@ngroups)) {
         # fill in optimal rotation for this set, for this group

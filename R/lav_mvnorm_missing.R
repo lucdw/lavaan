@@ -88,8 +88,8 @@ lav_mvnorm_missing_loglik_samplestats <- function(Yp = NULL,
 
   # global inverse + logdet
   Sigma.inv <- lav_matrix_symmetric_inverse(
-    S = Sigma, logdet = TRUE,
-    Sinv.method = Sinv.method
+    s = Sigma, logdet = TRUE,
+    sinv_method = Sinv.method
   )
   Sigma.logdet <- attr(Sigma.inv, "logdet")
 
@@ -111,8 +111,8 @@ lav_mvnorm_missing_loglik_samplestats <- function(Yp = NULL,
     # invert Sigma for this pattern
     if (length(na.idx) > 0L) {
       sigma.inv <- lav_matrix_symmetric_inverse_update(
-        S.inv = Sigma.inv,
-        rm.idx = na.idx, logdet = TRUE, S.logdet = Sigma.logdet
+        s_inv = Sigma.inv,
+        rm_idx = na.idx, logdet = TRUE, s_logdet = Sigma.logdet
       )
       logdet[p] <- attr(sigma.inv, "logdet") * Yp[[p]]$freq
     } else {
@@ -175,8 +175,8 @@ lav_mvnorm_missing_llik_casewise <- function(Y = NULL,
 
   # global inverse + logdet
   Sigma.inv <- lav_matrix_symmetric_inverse(
-    S = Sigma, logdet = TRUE,
-    Sinv.method = Sinv.method
+    s = Sigma, logdet = TRUE,
+    sinv_method = Sinv.method
   )
   Sigma.logdet <- attr(Sigma.inv, "logdet")
 
@@ -214,8 +214,8 @@ lav_mvnorm_missing_llik_casewise <- function(Y = NULL,
 
     # invert Sigma for this pattern
     sigma.inv <- lav_matrix_symmetric_inverse_update(
-      S.inv = Sigma.inv,
-      rm.idx = na.idx, logdet = TRUE, S.logdet = Sigma.logdet
+      s_inv = Sigma.inv,
+      rm_idx = na.idx, logdet = TRUE, s_logdet = Sigma.logdet
     )
     logdet[i] <- attr(sigma.inv, "logdet")
 
@@ -277,8 +277,8 @@ lav_mvnorm_missing_llik_pattern <- function(Y = NULL,
 
   # global inverse + logdet
   Sigma.inv <- lav_matrix_symmetric_inverse(
-    S = Sigma, logdet = TRUE,
-    Sinv.method = Sinv.method
+    s = Sigma, logdet = TRUE,
+    sinv_method = Sinv.method
   )
   Sigma.logdet <- attr(Sigma.inv, "logdet")
 
@@ -311,8 +311,8 @@ lav_mvnorm_missing_llik_pattern <- function(Y = NULL,
     # invert Sigma for this pattern
     if (length(na.idx) > 0L) {
       sigma.inv <- lav_matrix_symmetric_inverse_update(
-        S.inv = Sigma.inv,
-        rm.idx = na.idx, logdet = TRUE, S.logdet = Sigma.logdet
+        s_inv = Sigma.inv,
+        rm_idx = na.idx, logdet = TRUE, s_logdet = Sigma.logdet
       )
       logdet[case.idx] <- attr(sigma.inv, "logdet")
     } else {
@@ -396,8 +396,8 @@ lav_mvnorm_missing_dlogl_dmu_samplestats <- function(Yp = NULL,
 
   if (is.null(Sigma.inv)) {
     Sigma.inv <- lav_matrix_symmetric_inverse(
-      S = Sigma, logdet = FALSE,
-      Sinv.method = Sinv.method
+      s = Sigma, logdet = FALSE,
+      sinv_method = Sinv.method
     )
   }
 
@@ -415,8 +415,8 @@ lav_mvnorm_missing_dlogl_dmu_samplestats <- function(Yp = NULL,
     # invert Sigma for this pattern
     if (length(na.idx) > 0L) {
       sigma.inv <- lav_matrix_symmetric_inverse_update(
-        S.inv = Sigma.inv,
-        rm.idx = na.idx, logdet = FALSE
+        s_inv = Sigma.inv,
+        rm_idx = na.idx, logdet = FALSE
       )
     } else {
       sigma.inv <- Sigma.inv
@@ -460,8 +460,8 @@ lav_mvnorm_missing_dlogl_dsigma <- function(m_y = NULL,
   if (is.null(sigma_inv)) {
     # invert Sigma
     sigma_inv <- lav_matrix_symmetric_inverse(
-      S = m_sigma, logdet = FALSE,
-      Sinv.method = sinv_method
+      s = m_sigma, logdet = FALSE,
+      sinv_method = sinv_method
     )
   }
 
@@ -490,8 +490,8 @@ lav_mvnorm_missing_dlogl_dsigma <- function(m_y = NULL,
     # invert Sigma for this pattern
     if (length(na_idx) > 0L) {
       local_sigma_inv <- lav_matrix_symmetric_inverse_update(
-        S.inv = sigma_inv,
-        rm.idx = na_idx, logdet = FALSE
+        s_inv = sigma_inv,
+        rm_idx = na_idx, logdet = FALSE
       )
     } else {
       local_sigma_inv <- sigma_inv
@@ -548,8 +548,8 @@ lav_mvnorm_missing_dlogl_dSigma_samplestats <- function(Yp = NULL,
   if (is.null(Sigma.inv)) {
     # invert Sigma
     Sigma.inv <- lav_matrix_symmetric_inverse(
-      S = Sigma, logdet = FALSE,
-      Sinv.method = Sinv.method
+      s = Sigma, logdet = FALSE,
+      sinv_method = Sinv.method
     )
   }
 
@@ -567,8 +567,8 @@ lav_mvnorm_missing_dlogl_dSigma_samplestats <- function(Yp = NULL,
     # invert Sigma for this pattern
     if (length(na.idx) > 0L) {
       sigma.inv <- lav_matrix_symmetric_inverse_update(
-        S.inv = Sigma.inv,
-        rm.idx = na.idx, logdet = FALSE
+        s_inv = Sigma.inv,
+        rm_idx = na.idx, logdet = FALSE
       )
     } else {
       sigma.inv <- Sigma.inv
@@ -629,8 +629,8 @@ lav_mvnorm_missing_dlogl_dvechSigma_samplestats <-
     if (is.null(Sigma.inv)) {
       # invert Sigma
       Sigma.inv <- lav_matrix_symmetric_inverse(
-        S = Sigma, logdet = FALSE,
-        Sinv.method = Sinv.method
+        s = Sigma, logdet = FALSE,
+        sinv_method = Sinv.method
       )
     }
 
@@ -648,8 +648,8 @@ lav_mvnorm_missing_dlogl_dvechSigma_samplestats <-
       # invert Sigma for this pattern
       if (length(na.idx) > 0L) {
         sigma.inv <- lav_matrix_symmetric_inverse_update(
-          S.inv = Sigma.inv,
-          rm.idx = na.idx, logdet = FALSE
+          s_inv = Sigma.inv,
+          rm_idx = na.idx, logdet = FALSE
         )
       } else {
         sigma.inv <- Sigma.inv
@@ -705,8 +705,8 @@ lav_mvnorm_missing_scores_mu <- function(Y = NULL,
   if (is.null(Sigma.inv)) {
     # invert Sigma
     Sigma.inv <- lav_matrix_symmetric_inverse(
-      S = Sigma, logdet = FALSE,
-      Sinv.method = Sinv.method
+      s = Sigma, logdet = FALSE,
+      sinv_method = Sinv.method
     )
   }
 
@@ -734,8 +734,8 @@ lav_mvnorm_missing_scores_mu <- function(Y = NULL,
     # invert Sigma for this pattern
     if (length(na.idx) > 0L) {
       sigma.inv <- lav_matrix_symmetric_inverse_update(
-        S.inv = Sigma.inv,
-        rm.idx = na.idx, logdet = FALSE
+        s_inv = Sigma.inv,
+        rm_idx = na.idx, logdet = FALSE
       )
     } else {
       sigma.inv <- Sigma.inv
@@ -780,8 +780,8 @@ lav_mvnorm_missing_scores_vech_sigma <- function(Y = NULL,
   if (is.null(Sigma.inv)) {
     # invert Sigma
     Sigma.inv <- lav_matrix_symmetric_inverse(
-      S = Sigma, logdet = FALSE,
-      Sinv.method = Sinv.method
+      s = Sigma, logdet = FALSE,
+      sinv_method = Sinv.method
     )
   }
 
@@ -817,8 +817,8 @@ lav_mvnorm_missing_scores_vech_sigma <- function(Y = NULL,
     # invert Sigma for this pattern
     if (length(na.idx) > 0L) {
       sigma.inv <- lav_matrix_symmetric_inverse_update(
-        S.inv = Sigma.inv,
-        rm.idx = na.idx, logdet = FALSE
+        s_inv = Sigma.inv,
+        rm_idx = na.idx, logdet = FALSE
       )
       tmp <- matrix(0, P, P)
       tmp[var.idx, var.idx] <- sigma.inv
@@ -875,8 +875,8 @@ lav_mvnorm_missing_scores_mu_vech_sigma <- function(Y = NULL,
   if (is.null(Sigma.inv)) {
     # invert Sigma
     Sigma.inv <- lav_matrix_symmetric_inverse(
-      S = Sigma, logdet = FALSE,
-      Sinv.method = Sinv.method
+      s = Sigma, logdet = FALSE,
+      sinv_method = Sinv.method
     )
   }
 
@@ -915,8 +915,8 @@ lav_mvnorm_missing_scores_mu_vech_sigma <- function(Y = NULL,
     # invert Sigma for this pattern
     if (length(na.idx) > 0L) {
       sigma.inv <- lav_matrix_symmetric_inverse_update(
-        S.inv = Sigma.inv,
-        rm.idx = na.idx, logdet = FALSE
+        s_inv = Sigma.inv,
+        rm_idx = na.idx, logdet = FALSE
       )
       tmp <- matrix(0, P, P)
       tmp[var.idx, var.idx] <- sigma.inv
@@ -954,7 +954,7 @@ lav_mvnorm_missing_scores_mu_vech_sigma <- function(Y = NULL,
   if (length(x.idx) > 0L) {
     not.x <- lav_matrix_vech_which_idx(n = P, idx = x.idx,
                                        #diagonal = !correlation,
-                                       add.idx.at.start = TRUE)
+                                       add_idx_at_start = TRUE)
     out[, not.x] <- 0
   }
 
@@ -994,8 +994,8 @@ lav_mvnorm_missing_logl_hessian_samplestats <-
 
     if (is.null(Sigma.inv)) {
       Sigma.inv <- lav_matrix_symmetric_inverse(
-        S = Sigma, logdet = FALSE,
-        Sinv.method = Sinv.method
+        s = Sigma, logdet = FALSE,
+        sinv_method = Sinv.method
       )
     }
 
@@ -1015,8 +1015,8 @@ lav_mvnorm_missing_logl_hessian_samplestats <-
       # invert Sigma for this pattern
       if (length(na.idx) > 0L) {
         sigma.inv <- lav_matrix_symmetric_inverse_update(
-          S.inv = Sigma.inv,
-          rm.idx = na.idx, logdet = FALSE
+          s_inv = Sigma.inv,
+          rm_idx = na.idx, logdet = FALSE
         )
       } else {
         sigma.inv <- Sigma.inv
@@ -1058,7 +1058,7 @@ lav_mvnorm_missing_logl_hessian_samplestats <-
     if (length(x.idx) > 0L) {
       not.x <- lav_matrix_vech_which_idx(n = P, idx = x.idx,
                                          #diagonal = !correlation,
-                                         add.idx.at.start = TRUE)
+                                         add_idx_at_start = TRUE)
       out[, not.x] <- 0
       out[not.x, ] <- 0
     }
@@ -1086,8 +1086,8 @@ lav_mvnorm_missing_information_expected <- function(Y = NULL,
 
   if (is.null(Sigma.inv)) {
     Sigma.inv <- lav_matrix_symmetric_inverse(
-      S = Sigma, logdet = FALSE,
-      Sinv.method = Sinv.method
+      s = Sigma, logdet = FALSE,
+      sinv_method = Sinv.method
     )
   }
 
@@ -1121,8 +1121,8 @@ lav_mvnorm_missing_information_expected <- function(Y = NULL,
     # invert Sigma for this pattern
     if (length(na.idx) > 0L) {
       sigma.inv <- lav_matrix_symmetric_inverse_update(
-        S.inv = Sigma.inv,
-        rm.idx = na.idx, logdet = FALSE
+        s_inv = Sigma.inv,
+        rm_idx = na.idx, logdet = FALSE
       )
     } else {
       sigma.inv <- Sigma.inv
@@ -1153,7 +1153,7 @@ lav_mvnorm_missing_information_expected <- function(Y = NULL,
   if (length(x.idx) > 0L) {
     not.x <- lav_matrix_vech_which_idx(n = P, idx = x.idx,
                                        # diagonal = !correlation,
-                                       add.idx.at.start = TRUE)
+                                       add_idx_at_start = TRUE)
     out[not.x, ] <- 0
     out[, not.x] <- 0
   }
@@ -1283,8 +1283,8 @@ lav_mvnorm_missing_information_both <- function(Y = NULL,
   if (is.null(Sigma.inv)) {
     # invert Sigma
     Sigma.inv <- lav_matrix_symmetric_inverse(
-      S = Sigma, logdet = FALSE,
-      Sinv.method = Sinv.method
+      s = Sigma, logdet = FALSE,
+      sinv_method = Sinv.method
     )
   }
 
@@ -1345,8 +1345,8 @@ lav_mvnorm_missing_information_both <- function(Y = NULL,
     # invert Sigma for this pattern
     if (length(na.idx) > 0L) {
       sigma.inv <- lav_matrix_symmetric_inverse_update(
-        S.inv = Sigma.inv,
-        rm.idx = na.idx, logdet = FALSE
+        s_inv = Sigma.inv,
+        rm_idx = na.idx, logdet = FALSE
       )
       tmp <- matrix(0, P, P)
       tmp[var.idx, var.idx] <- sigma.inv
@@ -1430,7 +1430,7 @@ lav_mvnorm_missing_information_both <- function(Y = NULL,
   if (length(x.idx) > 0L) {
     not.x <- lav_matrix_vech_which_idx(n = P, idx = x.idx,
                                        #diagonal = !correlation,
-                                       add.idx.at.start = TRUE)
+                                       add_idx_at_start = TRUE)
     SC[, not.x] <- 0
   }
 
@@ -1462,7 +1462,7 @@ lav_mvnorm_missing_information_both <- function(Y = NULL,
   if (length(x.idx) > 0L) {
     not.x <- lav_matrix_vech_which_idx(n = P, idx = x.idx,
                                        # diagonal = !correlation,
-                                       add.idx.at.start = TRUE)
+                                       add_idx_at_start = TRUE)
     Abeta[not.x, ] <- 0
     Abeta[, not.x] <- 0
   }
@@ -1550,8 +1550,8 @@ lav_mvnorm_missing_impute_pattern <- function(Y = NULL,
   if (is.null(Sigma.inv)) {
     # invert Sigma
     Sigma.inv <- lav_matrix_symmetric_inverse(
-      S = Sigma, logdet = FALSE,
-      Sinv.method = Sinv.method
+      s = Sigma, logdet = FALSE,
+      sinv_method = Sinv.method
     )
   }
 
@@ -1577,8 +1577,7 @@ lav_mvnorm_missing_impute_pattern <- function(Y = NULL,
     # invert Sigma (Sigma_22, observed part only) for this pattern
     Sigma_22.inv <- try(
       lav_matrix_symmetric_inverse_update(
-        S.inv =
-          Sigma.inv, rm.idx = na.idx, logdet = FALSE
+        s_inv = Sigma.inv, rm_idx = na.idx, logdet = FALSE
       ),
       silent = TRUE
     )
@@ -1618,8 +1617,8 @@ lav_mvnorm_missing_estep <- function(Y = NULL,
   if (is.null(Sigma.inv)) {
     # invert Sigma
     Sigma.inv <- lav_matrix_symmetric_inverse(
-      S = Sigma, logdet = FALSE,
-      Sinv.method = Sinv.method
+      s = Sigma, logdet = FALSE,
+      sinv_method = Sinv.method
     )
   }
 
@@ -1660,8 +1659,7 @@ lav_mvnorm_missing_estep <- function(Y = NULL,
     # invert Sigma (Sigma_22, observed part only) for this pattern
     Sigma_22.inv <- try(
       lav_matrix_symmetric_inverse_update(
-        S.inv =
-          Sigma.inv, rm.idx = na.idx, logdet = FALSE
+        s_inv = Sigma.inv, rm_idx = na.idx, logdet = FALSE
       ),
       silent = TRUE
     )

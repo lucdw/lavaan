@@ -63,8 +63,8 @@ lav_mvnorm_h1_loglik_data <- function(
       logdet <- -2 * sum(log(diag(icS)))
     } else {
       sample.cov.inv <- lav_matrix_symmetric_inverse(
-        S = sample.cov,
-        logdet = TRUE, Sinv.method = Sinv.method
+        s = sample.cov,
+        logdet = TRUE, sinv_method = Sinv.method
       )
       logdet <- attr(sample.cov.inv, "logdet")
       # mahalanobis distance
@@ -81,8 +81,8 @@ lav_mvnorm_h1_loglik_data <- function(
   } else {
     # invert sample.cov
     sample.cov.inv <- lav_matrix_symmetric_inverse(
-      S = sample.cov,
-      logdet = TRUE, Sinv.method = Sinv.method
+      s = sample.cov,
+      logdet = TRUE, sinv_method = Sinv.method
     )
     logdet <- attr(sample.cov.inv, "logdet")
 
@@ -136,8 +136,8 @@ lav_mvnorm_h1_loglik_samplestats <- function(
   # all we need is the logdet
   if (is.null(sample.cov.logdet)) {
     sample.cov.inv <- lav_matrix_symmetric_inverse(
-      S = sample.cov,
-      logdet = TRUE, Sinv.method = Sinv.method
+      s = sample.cov,
+      logdet = TRUE, sinv_method = Sinv.method
     )
     logdet <- attr(sample.cov.inv, "logdet")
   } else {
@@ -255,8 +255,8 @@ lav_mvnorm_h1_information_expected <- function(
 
     # invert sample.cov
     sample.cov.inv <- lav_matrix_symmetric_inverse(
-      S = sample.cov,
-      logdet = FALSE, Sinv.method = Sinv.method
+      s = sample.cov,
+      logdet = FALSE, sinv_method = Sinv.method
     )
   }
 
@@ -331,8 +331,8 @@ lav_mvnorm_h1_information_observed_samplestats <- function(
   if (is.null(sample.cov.inv)) {
     # invert sample.cov
     sample.cov.inv <- lav_matrix_symmetric_inverse(
-      S = sample.cov,
-      logdet = FALSE, Sinv.method = Sinv.method
+      s = sample.cov,
+      logdet = FALSE, sinv_method = Sinv.method
     )
   }
 
@@ -402,8 +402,8 @@ lav_mvnorm_h1_information_firstorder <- function(
       sample.cov <- lav_matrix_cov(Y)
     }
     sample.cov.inv <- lav_matrix_symmetric_inverse(
-      S = sample.cov,
-      logdet = FALSE, Sinv.method = Sinv.method
+      s = sample.cov,
+      logdet = FALSE, sinv_method = Sinv.method
     )
   }
 
@@ -437,8 +437,8 @@ lav_mvnorm_h1_information_firstorder <- function(
       sample.cov <- lav_matrix_cov(Y)
     }
     sample.cov.inv <- lav_matrix_symmetric_inverse(
-      S = sample.cov,
-      logdet = FALSE, Sinv.method = Sinv.method
+      s = sample.cov,
+      logdet = FALSE, sinv_method = Sinv.method
     )
   }
 
