@@ -643,7 +643,7 @@ lav_sam_step1_local_jac <- function(STEP1 = NULL, FIT = NULL, P.only = FALSE,
                        lavdata@ov.names[[g]])
     mm.nvar <- length(lavdata@ov.names[[g]])
     mm.col.idx <- lav_matrix_vech_which_idx(mm.nvar, idx = mm.ov.idx,
-      add.idx.at.start = lavmodel@meanstructure)
+      add_idx_at_start = lavmodel@meanstructure)
     mm.row.idx <- STEP1$block.mm.idx[[mm]][STEP1$block.ptm.idx[[mm]]]
     JACa[mm.row.idx, mm.col.idx] <- mm.jac
   }
@@ -703,8 +703,8 @@ lav_sam_step1_local_jac <- function(STEP1 = NULL, FIT = NULL, P.only = FALSE,
       # transform data to comply with the new COV/YBAR
       Y <- FIT@Data@X[[1]]
       Ytrans <- vector("list", nblocks)
-      Ytrans[[1]] <- lav_matrix_transform_mean_cov(Y, target.mean = this.ybar,
-                                                   target.cov = this.cov)
+      Ytrans[[1]] <- lav_matrix_transform_mean_cov(Y, target_mean = this.ybar,
+                                                   target_cov = this.cov)
       colnames(Ytrans[[1]]) <- FIT@pta$vnames$ov[[1]]
 
       step1 <- lav_sam_step1_local(STEP1 = step1, FIT = FIT, Y = Ytrans,

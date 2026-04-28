@@ -276,13 +276,13 @@ lav_mvreg_cluster_loglik_samplestats_2l <- function(YLp = NULL,
 
   # common parts:
   sigma.w.inv <- lav_matrix_symmetric_inverse(
-    S = sigma.w,
+    s = sigma.w,
     logdet = TRUE
   )
   sigma.w.logdet <- attr(sigma.w.inv, "logdet")
   if (length(between.y.idx) > 0L) {
     sigma.zz.inv <- lav_matrix_symmetric_inverse(
-      S = sigma.zz,
+      s = sigma.zz,
       logdet = TRUE
     )
     sigma.zz.logdet <- attr(sigma.zz.inv, "logdet")
@@ -319,7 +319,7 @@ lav_mvreg_cluster_loglik_samplestats_2l <- function(YLp = NULL,
     # construct sigma.j
     sigma.j <- (nj * sigma.b.z) + sigma.w
     sigma.j.inv <- lav_matrix_symmetric_inverse(
-      S = sigma.j,
+      s = sigma.j,
       logdet = TRUE
     )
     sigma.j.logdet <- attr(sigma.j.inv, "logdet")
@@ -452,7 +452,7 @@ lav_mvreg_cluster_dlogl_2l_samplestats <- function(YLp = NULL,
   S.PW <- (Y1Y1.wb.res - Y2Y2w.res) / sum(cluster.size - 1)
 
   # common parts:
-  sigma.w.inv <- lav_matrix_symmetric_inverse(S = sigma.w)
+  sigma.w.inv <- lav_matrix_symmetric_inverse(s = sigma.w)
 
   G.beta.w <- matrix(0, ncluster.sizes, length(beta.w))
   G.beta.b <- matrix(0, ncluster.sizes, length(beta.b))
@@ -465,7 +465,7 @@ lav_mvreg_cluster_dlogl_2l_samplestats <- function(YLp = NULL,
     G.sigma.zz <- matrix(0, ncluster.sizes, length(lav_matrix_vech(sigma.zz)))
     G.sigma.yz <- matrix(0, ncluster.sizes, length(sigma.yz))
 
-    sigma.zz.inv <- lav_matrix_symmetric_inverse(S = sigma.zz)
+    sigma.zz.inv <- lav_matrix_symmetric_inverse(s = sigma.zz)
     sigma.yz.zi <- sigma.yz %*% sigma.zz.inv
     sigma.zi.zy <- t(sigma.yz.zi)
     sigma.b.z <- sigma.b - sigma.yz %*% sigma.zi.zy
@@ -488,7 +488,7 @@ lav_mvreg_cluster_dlogl_2l_samplestats <- function(YLp = NULL,
 
       # construct sigma.j
       sigma.j <- (nj * sigma.b.z) + sigma.w
-      sigma.j.inv <- lav_matrix_symmetric_inverse(S = sigma.j)
+      sigma.j.inv <- lav_matrix_symmetric_inverse(s = sigma.j)
       sigma.ji.yz.zi <- sigma.j.inv %*% sigma.yz.zi
       sigma.zi.zy.ji <- t(sigma.ji.yz.zi)
       sigma.ji.yz <- sigma.j.inv %*% sigma.yz
@@ -580,7 +580,7 @@ lav_mvreg_cluster_dlogl_2l_samplestats <- function(YLp = NULL,
 
       # construct sigma.j
       sigma.j <- (nj * sigma.b) + sigma.w
-      sigma.j.inv <- lav_matrix_symmetric_inverse(S = sigma.j)
+      sigma.j.inv <- lav_matrix_symmetric_inverse(s = sigma.j)
 
       # common part
       jYYj <- nj * sigma.j.inv %*% Y2Yc.yy %*% sigma.j.inv
@@ -746,7 +746,7 @@ lav_mvreg_cluster_scores_2l <- function(Y1 = NULL,
   }
 
   # common parts:
-  sigma.w.inv <- lav_matrix_symmetric_inverse(S = sigma.w)
+  sigma.w.inv <- lav_matrix_symmetric_inverse(s = sigma.w)
 
   G.beta.w1 <- matrix(0, nclusters, length(beta.w))
   G.beta.b <- matrix(0, nclusters, length(beta.b))
@@ -760,7 +760,7 @@ lav_mvreg_cluster_scores_2l <- function(Y1 = NULL,
     G.sigma.zz <- matrix(0, nclusters, length(lav_matrix_vech(sigma.zz)))
     G.sigma.yz <- matrix(0, nclusters, length(sigma.yz))
 
-    sigma.zz.inv <- lav_matrix_symmetric_inverse(S = sigma.zz)
+    sigma.zz.inv <- lav_matrix_symmetric_inverse(s = sigma.zz)
     sigma.yz.zi <- sigma.yz %*% sigma.zz.inv
     sigma.zi.zy <- t(sigma.yz.zi)
     sigma.b.z <- sigma.b - sigma.yz %*% sigma.zi.zy
@@ -781,7 +781,7 @@ lav_mvreg_cluster_scores_2l <- function(Y1 = NULL,
 
       # construct sigma.j
       sigma.j <- (nj * sigma.b.z) + sigma.w
-      sigma.j.inv <- lav_matrix_symmetric_inverse(S = sigma.j)
+      sigma.j.inv <- lav_matrix_symmetric_inverse(s = sigma.j)
       sigma.ji.yz.zi <- sigma.j.inv %*% sigma.yz.zi
       sigma.zi.zy.ji <- t(sigma.ji.yz.zi)
       sigma.ji.yz <- sigma.j.inv %*% sigma.yz
@@ -892,7 +892,7 @@ lav_mvreg_cluster_scores_2l <- function(Y1 = NULL,
 
       # construct sigma.j
       sigma.j <- (nj * sigma.b) + sigma.w
-      sigma.j.inv <- lav_matrix_symmetric_inverse(S = sigma.j)
+      sigma.j.inv <- lav_matrix_symmetric_inverse(s = sigma.j)
 
       # common part
       jYYj <- nj * sigma.j.inv %*% Y2Yc.yy %*% sigma.j.inv

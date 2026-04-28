@@ -67,8 +67,8 @@ lav_cfa_fabin3 <- function(s, marker_idx = NULL, lambda_nonzero_idx = NULL) {
     rm3_idx <- rm3_idx + 1L
     # update inverse
     s33_inv <- lav_matrix_symmetric_inverse_update(
-      S.inv = s33_inv_1,
-      rm.idx = rm3_idx
+      s_inv = s33_inv_1,
+      rm_idx = rm3_idx
     )
 
     if (length(fac_idx) == 1L) { # most common scenario in CFA

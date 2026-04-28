@@ -11,22 +11,22 @@
 # with an Application to Condition Estimators. SIAM Journal on Numerical
 # Analysis, 17(3), 403-409. http://www.jstor.org/stable/2156882
 #
-lav_matrix_rotate_gen <- function(M = 10L, orthogonal = TRUE) {
+lav_matrix_rotate_gen <- function(m = 10L, orthogonal = TRUE) {
   # catch M=1
-  if (M == 1L) {
+  if (m == 1L) {
     return(matrix(1, 1, 1))
   }
 
   if (orthogonal) {
     # create random normal matrix
-    tmp <- matrix(rnorm(M * M), nrow = M, ncol = M)
+    tmp <- matrix(rnorm(m * m), nrow = m, ncol = m)
     # use QR decomposition
-    qr.out <- qr(tmp)
-    Q <- qr.Q(qr.out)
-    R <- qr.R(qr.out)
+    qr_out <- qr(tmp)
+    q_1 <- qr.Q(qr_out)
+    r <- qr.R(qr_out)
     # ... "normalized so that the diagonal elements of R are positive"
-    sign.diag.r <- sign(diag(R))
-    out <- Q * rep(sign.diag.r, each = M)
+    sign_diag_r <- sign(diag(r))
+    out <- q_1 * rep(sign_diag_r, each = m)
   } else {
     # just normalize *columns* of tmp -> crossprod(out) has 1 on diagonal
     out <- t(t(tmp) / sqrt(diag(crossprod(tmp))))
@@ -37,26 +37,26 @@ lav_matrix_rotate_gen <- function(M = 10L, orthogonal = TRUE) {
 
 # check if ROT is an orthogonal matrix if orthogonal = TRUE, or normal if
 # orthogonal = FALSE
-lav_matrix_rotate_check <- function(ROT = NULL, orthogonal = TRUE,
+lav_matrix_rotate_check <- function(rot = NULL, orthogonal = TRUE,
                                     tolerance = sqrt(.Machine$double.eps)) {
   # we assume ROT is a matrix
-  M <- nrow(ROT)
+  m <- nrow(rot)
 
   # crossprod
-  RR <- crossprod(ROT)
+  rr <- crossprod(rot)
 
   # target
   if (orthogonal) {
     # ROT^T %*% ROT = I
-    target <- diag(M)
+    target <- diag(m)
   } else {
     # diagonal should be 1
-    target <- RR
+    target <- rr
     diag(target) <- 1
   }
 
   # compare for near-equality
-  res <- all.equal(target = target, current = RR, tolerance = tolerance)
+  res <- all.equal(target = target, current = rr, tolerance = tolerance)
 
   # return TRUE or FALSE
   if (is.logical(res) && res) {
@@ -69,11 +69,11 @@ lav_matrix_rotate_check <- function(ROT = NULL, orthogonal = TRUE,
 }
 
 # get weights vector needed to weight the rows using Kaiser normalization
-lav_matrix_rotate_kaiser_weights <- function(A = NULL) {
-  normalize <- 1 / sqrt(rowSums(A * A))
-  idxZero <- which(normalize == 0)
+lav_matrix_rotate_kaiser_weights <- function(a = NULL) {    # nolint
+  normalize <- 1 / sqrt(rowSums(a * a))
+  idx_zero <- which(normalize == 0)
   # catch rows with all zero (thanks to Coen Bernaards for suggesting this)
-  normalize[idxZero] <- normalize[idxZero] + .Machine$double.eps
+  normalize[idx_zero] <- normalize[idx_zero] + .Machine$double.eps
   normalize
 }
 
@@ -83,53 +83,53 @@ lav_matrix_rotate_kaiser_weights <- function(A = NULL) {
 #
 # Note: the 'final' weights are mutliplied by the Kaiser weights (see CEFA)
 #
-lav_matrix_rotate_cm_weights <- function(A = NULL) {
-  P <- nrow(A)
-  M <- ncol(A)
+lav_matrix_rotate_cm_weights <- function(a = NULL) {
+  p <- nrow(a)
+  m <- ncol(a)
 
   # first principal component of AA'
-  A.eigen <- eigen(tcrossprod(A), symmetric = TRUE)
-  a <- A.eigen$vectors[, 1] * sqrt(A.eigen$values[1])
+  a_eigen <- eigen(tcrossprod(a), symmetric = TRUE)
+  a_1 <- a_eigen$vectors[, 1] * sqrt(a_eigen$values[1])
 
-  Kaiser.weights <- 1 / sqrt(rowSums(A * A))
-  a.star <- abs(a * Kaiser.weights) # always between 0 and 1
+  kaiser_weights <- 1 / sqrt(rowSums(a * a))
+  a_star <- abs(a_1 * kaiser_weights) # always between 0 and 1
 
-  m.sqrt.inv <- 1 / sqrt(M)
-  acos.m.sqrt.inv <- acos(m.sqrt.inv)
+  m_sqrt_inv <- 1 / sqrt(m)
+  acos_m_sqrt_inv <- acos(m_sqrt_inv)
 
-  delta <- numeric(P)
-  delta[a.star < m.sqrt.inv] <- pi / 2
+  delta <- numeric(p)
+  delta[a_star < m_sqrt_inv] <- pi / 2
 
-  tmp <- (acos.m.sqrt.inv - acos(a.star)) / (acos.m.sqrt.inv - delta) * (pi / 2)
+  tmp <- (acos_m_sqrt_inv - acos(a_star)) / (acos_m_sqrt_inv - delta) * (pi / 2)
 
   # add constant (see Cureton & Mulaik, 1975, page 187)
   cm <- cos(tmp) * cos(tmp) + 0.001
 
   # final weights = weighted by Kaiser weights
-  cm * Kaiser.weights
+  cm * kaiser_weights
 }
 
 # taken from the stats package, but skipping varimax (already done):
-lav_matrix_rotate_promax <- function(x, m = 4, varimax.ROT = NULL) {
+lav_matrix_rotate_promax <- function(x, m = 4, varimax_rot = NULL) {
   # this is based on promax() from factanal.R in /src/library/stats/R
 
   # 1. create 'ideal' pattern matrix
-  Q <- x * abs(x)^(m - 1)
+  q_1 <- x * abs(x) ^ (m - 1)
 
   # 2. regress x on Q to obtain 'rotation matrix' (same as 'procrustes')
-  U <- lm.fit(x, Q)$coefficients
+  u <- lm.fit(x, q_1)$coefficients
 
   # 3. rescale so that solve(crossprod(U)) has 1 on the diagonal
 
-  d <- diag(solve(t(U) %*% U))
-  U <- U %*% diag(sqrt(d))
-  dimnames(U) <- NULL
+  d <- diag(solve(t(u) %*% u))
+  u <- u %*% diag(sqrt(d))
+  dimnames(u) <- NULL
 
   # 4. create rotated factor matrix
-  z <- x %*% U
+  z <- x %*% u
 
   # 5. update rotation amtrix
-  U <- varimax.ROT %*% U # here we plugin the rotation matrix from varimax
+  u <- varimax_rot %*% u # here we plugin the rotation matrix from varimax
 
-  list(loadings = z, rotmat = U)
+  list(loadings = z, rotmat = u)
 }

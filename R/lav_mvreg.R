@@ -49,8 +49,8 @@ lav_mvreg_loglik_data <- function(Y = NULL,
       DIST <- rowSums((RES %*% icS)^2)
     } else {
       res.cov.inv <- lav_matrix_symmetric_inverse(
-        S = res.cov, logdet = TRUE,
-        Sinv.method = Sinv.method
+        s = res.cov, logdet = TRUE,
+        sinv_method = Sinv.method
       )
       logdet <- attr(res.cov.inv, "logdet")
 
@@ -62,8 +62,8 @@ lav_mvreg_loglik_data <- function(Y = NULL,
   } else {
     # invert res.cov
     res.cov.inv <- lav_matrix_symmetric_inverse(
-      S = res.cov, logdet = TRUE,
-      Sinv.method = Sinv.method
+      s = res.cov, logdet = TRUE,
+      sinv_method = Sinv.method
     )
     logdet <- attr(res.cov.inv, "logdet")
 
@@ -114,8 +114,8 @@ lav_mvreg_loglik_samplestats <- function(sample.res.int = NULL,
   # res.cov.inv
   if (is.null(res.cov.inv)) {
     res.cov.inv <- lav_matrix_symmetric_inverse(
-      S = res.cov, logdet = TRUE,
-      Sinv.method = Sinv.method
+      s = res.cov, logdet = TRUE,
+      sinv_method = Sinv.method
     )
     logdet <- attr(res.cov.inv, "logdet")
   } else {
@@ -165,8 +165,8 @@ lav_mvreg_dlogl_dbeta <- function(Y = NULL,
   if (is.null(res.cov.inv)) {
     # invert res.cov
     res.cov.inv <- lav_matrix_symmetric_inverse(
-      S = res.cov, logdet = FALSE,
-      Sinv.method = Sinv.method
+      s = res.cov, logdet = FALSE,
+      sinv_method = Sinv.method
     )
   }
 
@@ -201,8 +201,8 @@ lav_mvreg_dlogl_drescov <- function(Y = NULL,
   if (is.null(res.cov.inv)) {
     # invert res.cov
     res.cov.inv <- lav_matrix_symmetric_inverse(
-      S = res.cov, logdet = FALSE,
-      Sinv.method = Sinv.method
+      s = res.cov, logdet = FALSE,
+      sinv_method = Sinv.method
     )
   }
 
@@ -240,8 +240,8 @@ lav_mvreg_dlogl_dvechrescov <- function(Y = NULL,
   if (is.null(res.cov.inv)) {
     # invert res.cov
     res.cov.inv <- lav_matrix_symmetric_inverse(
-      S = res.cov, logdet = FALSE,
-      Sinv.method = Sinv.method
+      s = res.cov, logdet = FALSE,
+      sinv_method = Sinv.method
     )
   }
 
@@ -287,8 +287,8 @@ lav_mvreg_scores_beta <- function(Y = NULL,
   if (is.null(res.cov.inv)) {
     # invert res.cov
     res.cov.inv <- lav_matrix_symmetric_inverse(
-      S = res.cov, logdet = FALSE,
-      Sinv.method = Sinv.method
+      s = res.cov, logdet = FALSE,
+      sinv_method = Sinv.method
     )
   }
 
@@ -327,8 +327,8 @@ lav_mvreg_scores_vech_sigma <- function(Y = NULL,
   if (is.null(res.cov.inv)) {
     # invert res.cov
     res.cov.inv <- lav_matrix_symmetric_inverse(
-      S = res.cov, logdet = FALSE,
-      Sinv.method = Sinv.method
+      s = res.cov, logdet = FALSE,
+      sinv_method = Sinv.method
     )
   }
 
@@ -379,8 +379,8 @@ lav_mvreg_scores_beta_vech_sigma <- function(Y = NULL,
   if (is.null(res.cov.inv)) {
     # invert res.cov
     res.cov.inv <- lav_matrix_symmetric_inverse(
-      S = res.cov, logdet = FALSE,
-      Sinv.method = Sinv.method
+      s = res.cov, logdet = FALSE,
+      sinv_method = Sinv.method
     )
   }
 
@@ -486,8 +486,8 @@ lav_mvreg_information_expected <- function(Y = NULL, # not used
   if (is.null(res.cov.inv)) {
     # invert res.cov
     res.cov.inv <- lav_matrix_symmetric_inverse(
-      S = res.cov, logdet = FALSE,
-      Sinv.method = Sinv.method
+      s = res.cov, logdet = FALSE,
+      sinv_method = Sinv.method
     )
   }
 
@@ -598,8 +598,8 @@ lav_mvreg_information_observed_samplestats <-
     if (is.null(res.cov.inv)) {
       # invert res.cov
       res.cov.inv <- lav_matrix_symmetric_inverse(
-        S = res.cov, logdet = FALSE,
-        Sinv.method = Sinv.method
+        s = res.cov, logdet = FALSE,
+        sinv_method = Sinv.method
       )
     }
 

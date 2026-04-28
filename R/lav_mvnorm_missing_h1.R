@@ -308,8 +308,8 @@ lav_mvnorm_missing_h1_omega_sw <- function(Y = NULL,
 
   A <- info$Abeta
   A.inv <- lav_matrix_symmetric_inverse(
-    S = A, logdet = FALSE,
-    Sinv.method = Sinv.method
+    s = A, logdet = FALSE,
+    sinv_method = Sinv.method
   )
   B <- info$Bbeta
 
