@@ -1027,7 +1027,7 @@ lav_model_partable  <- function(
 
           nlevs <- table(tmp_list$lhs[thresholds_idx]) + 1
           kmax <- max(nlevs)
-          
+
           if (!"thresholds" %in% group.equal || this_group == 1L) {
             # all free?
             if (length(thresholds_idx) > 0L && all(tmp_list$free[thresholds_idx] > 0L)) {
@@ -1319,7 +1319,7 @@ lav_model_partable  <- function(
   tmp_list$free[idx_free] <- seq_along(idx_free)
 
   # new in 0.6-11: add free counter to this element (as in < 0.5-18)
-  # unless we have other constraints
+  # unless we have other constraints (in which case ceq_simple = FALSE)
   if (ceq_simple) {
     idx_equal <- which(eq_id > 0)
     tmp_list$free[idx_equal] <- tmp_list$free[eq_id[idx_equal]]

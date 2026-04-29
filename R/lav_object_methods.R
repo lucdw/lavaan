@@ -506,9 +506,13 @@ lavParameterEstimates <- function(object,                      # nolint start
     }
     if (!is.null(tmp_partable$lower)) {
       tmp_list$lower <- tmp_partable$lower
+      tmp_list$lower[tmp_list$free > 0L] <-
+        tmp_list$lower[tmp_list$free > 0L] + .Machine$double.eps
     }
     if (!is.null(tmp_partable$upper)) {
       tmp_list$upper <- tmp_partable$upper
+      tmp_list$upper[tmp_list$free > 0L] <-
+        tmp_list$upper[tmp_list$free > 0L] - .Machine$double.eps
     }
 
 

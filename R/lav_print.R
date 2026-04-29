@@ -464,11 +464,16 @@ lav_parameterestimates_print <- function(x, ..., nd = 3L) {
   }
 
   # handle lower/upper boundary points
+  # attention: to distinguish fixed values from free but bounded values,
+  #            we have added a little bit of fuzz to the bounds of
+  #            free parameters only
   if (!is.null(x$lower)) {
-    b.idx <- which(abs(x$lower - x$est) < sqrt(.Machine$double.eps) &
-      (is.na(x$se) | (is.finite(x$se) & x$se != 0.0)))
-    if (length(b.idx) > 0L && !is.null(x$pvalue)) {
-      m[b.idx, "pvalue"] <- ""
+    diff_lower <- abs(x$lower - x$est)
+    b.idx <- which(diff_lower > 0 & diff_lower < sqrt(.Machine$double.eps))
+    if (length(b.idx) > 0L) {
+      if (!is.null(x$pvalue)) {
+        m[b.idx, "pvalue"] <- ""
+      }
       if (is.null(x$label)) {
         x$label <- rep("", length(x$lhs))
       }
@@ -481,10 +486,12 @@ lav_parameterestimates_print <- function(x, ..., nd = 3L) {
     m <- m[, colnames(m) != "lower"]
   }
   if (!is.null(x$upper)) {
-    b.idx <- which(abs(x$upper - x$est) < sqrt(.Machine$double.eps) &
-      is.finite(x$se) & x$se != 0.0)
-    if (length(b.idx) > 0L && !is.null(x$pvalue)) {
-      m[b.idx, "pvalue"] <- ""
+    diff_upper <- abs(x$upper - x$est)
+    b.idx <- which(diff_upper > 0 & diff_upper < sqrt(.Machine$double.eps))
+    if (length(b.idx) > 0L) {
+      if (!is.null(x$pvalue)) {
+        m[b.idx, "pvalue"] <- ""
+      }
       if (is.null(x$label)) {
         x$label <- rep("", length(x$lhs))
       }
