@@ -708,10 +708,10 @@ lav_sem_miiv_varcov <- function(x = NULL, samplestats = FALSE,
   } else { # ULS, or starting point for 2RLS/RLS
     S <- diag(1, nrow = nrow(sample_cov))
   }
-  theta2 <- lav_utils_wls_linearization(Delta = delta2, S = S,
+  theta2 <- lav_utils_wls_linearization(delta = delta2, s = S,
                                         meanstructure = lavmodel@meanstructure,
                                         categorical = lavmodel@categorical,
-                                        svec = svec, return_H = add.h2)
+                                        svec = svec, return_h = add.h2)
 
   # if ULS/GLS, we are done
 
@@ -721,9 +721,9 @@ lav_sem_miiv_varcov <- function(x = NULL, samplestats = FALSE,
     lavmodel.tmp <- lav_model_set_parameters(lavmodel = lavmodel, x = x)
     sigma <- lav_model_sigma(lavmodel = lavmodel.tmp, extra = FALSE)[[b]]
     theta2 <-
-      lav_utils_wls_linearization(Delta = delta2, S = sigma,
+      lav_utils_wls_linearization(delta = delta2, s = sigma,
                                   meanstructure = lavmodel@meanstructure,
-                                  svec = svec, return_H = add.h2)
+                                  svec = svec, return_h = add.h2)
   # RLS
   } else if (iv.varcov.method == "RLS") {
     # typically, we need 5-15 iterations, so max = 200 should be enough
@@ -733,9 +733,9 @@ lav_sem_miiv_varcov <- function(x = NULL, samplestats = FALSE,
       lavmodel.tmp <- lav_model_set_parameters(lavmodel = lavmodel, x = x)
       sigma <- lav_model_sigma(lavmodel = lavmodel.tmp, extra = FALSE)[[b]]
       theta2 <-
-        lav_utils_wls_linearization(Delta = delta2, S = sigma,
+        lav_utils_wls_linearization(delta = delta2, s = sigma,
                                     meanstructure = lavmodel@meanstructure,
-                                    svec = svec, return_H = add.h2)
+                                    svec = svec, return_h = add.h2)
       sse <- Re(sum((old_x - theta2)^2))
       if (sse < 1e-12 * Re(1 + sum(theta2^2))) {
         break
@@ -859,7 +859,7 @@ lav_sem_miiv_vcov <- function(lavmodel = NULL, lavsamplestats = NULL,
       # compute K matrix
       vec <- lav_implied_to_vec(
         implied = lavh1$implied, lavmodel = lavmodel,
-        drop.list = TRUE
+        drop_list = TRUE
       )
       jac_k <- numDeriv::jacobian(
         lav_sem_miiv_2sls_samplestats,
@@ -990,7 +990,7 @@ lav_sem_miiv_vcov <- function(lavmodel = NULL, lavsamplestats = NULL,
       delta2 <- delta[, free.undirected.idx, drop = FALSE]
       svec <- lav_implied_to_vec(
           implied = lavh1$implied, lavmodel = lavmodel,
-          drop.list = TRUE
+          drop_list = TRUE
       )
       if (lavmodel@categorical || iv.varcov.method == "ULS") {
         s_mat <- diag(lavmodel@nvar[[1]])
@@ -999,9 +999,9 @@ lav_sem_miiv_vcov <- function(lavmodel = NULL, lavsamplestats = NULL,
       } else {
         s_mat <- lavimplied$cov[[1]]
       }
-      tmp <- lav_utils_wls_linearization(Delta = delta2, S = s_mat,
+      tmp <- lav_utils_wls_linearization(delta = delta2, s = s_mat,
         meanstructure = lavmodel@meanstructure,
-        categorical = lavmodel@categorical, svec = svec, return_H = TRUE)
+        categorical = lavmodel@categorical, svec = svec, return_h = TRUE)
       h2 <- attr(tmp, "H")
       if (length(free.directed.idx) > 0L) {
         # assuming a SINGLE block for now
@@ -1129,7 +1129,7 @@ lav_sem_miiv_vcov <- function(lavmodel = NULL, lavsamplestats = NULL,
       } else {
         vec <- lav_implied_to_vec(
           implied = lavh1$implied, lavmodel = lavmodel,
-          drop.list = TRUE
+          drop_list = TRUE
         )
 
         jac_b <- lav_func_jacobian_complex(

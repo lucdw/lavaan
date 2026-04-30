@@ -693,4 +693,3 @@ lav_sem_miiv_utils_jack_eqs <- function(eqs = NULL, # one block only
 
   K_mat
 }
-

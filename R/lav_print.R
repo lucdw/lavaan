@@ -1183,19 +1183,19 @@ lav_summary_print <- function(x, ..., nd = 3L) {
       # method options
       if (rotation$rotation == "geomin") {
         c1 <- c(c1, "Geomin epsilon")
-        c2 <- c(c2, rotation$rotation.args$geomin.epsilon)
+        c2 <- c(c2, rotation$rotation.args$geomin_epsilon)
       } else if (rotation$rotation == "orthomax") {
         c1 <- c(c1, "Orthomax gamma")
-        c2 <- c(c2, rotation$rotation.args$orthomax.gamma)
+        c2 <- c(c2, rotation$rotation.args$orthomax_gamma)
       } else if (rotation$rotation == "cf") {
         c1 <- c(c1, "Crawford-Ferguson gamma")
-        c2 <- c(c2, rotation$rotation.args$cf.gamma)
+        c2 <- c(c2, rotation$rotation.args$cf_gamma)
       } else if (rotation$rotation == "oblimin") {
         c1 <- c(c1, "Oblimin gamma")
-        c2 <- c(c2, rotation$rotation.args$oblimin.gamma)
+        c2 <- c(c2, rotation$rotation.args$oblimin_gamma)
       } else if (rotation$rotation == "promax") {
         c1 <- c(c1, "Promax kappa")
-        c2 <- c(c2, rotation$rotation.args$promax.kappa)
+        c2 <- c(c2, rotation$rotation.args$promax_kappa)
       }
 
       # rotation algorithm
@@ -1208,7 +1208,7 @@ lav_summary_print <- function(x, ..., nd = 3L) {
 
       # Standardized metric (or not)
       c1 <- c(c1, "Standardized metric")
-      if (rotation$rotation.args$std.ov) {
+      if (rotation$rotation.args$std_ov) {
         c2 <- c(c2, "TRUE")
       } else {
         c2 <- c(c2, "FALSE")
@@ -1216,7 +1216,7 @@ lav_summary_print <- function(x, ..., nd = 3L) {
 
       # Row weights
       c1 <- c(c1, "Row weights")
-      tmp.txt <- rotation$rotation.args$row.weights
+      tmp.txt <- rotation$rotation.args$row_weights
       c2 <- c(c2, paste(toupper(substring(tmp.txt, 1, 1)),
         substring(tmp.txt, 2),
         sep = ""

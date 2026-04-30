@@ -292,7 +292,7 @@ lav_data_simulate_old <- function( # user-specified model
       X[[g]] <- lav_mvrnorm(
         n = sample.nobs[g],
         mu = Mu.hat[[g]],
-        Sigma = COV,
+        sigma_1 = COV,
         empirical = empirical
       )
     } else {
@@ -479,7 +479,7 @@ lav_data_valemaurelli1983 <- function(n = 100L, COR, skewness, kurtosis) {
   }
 
   # generate Z (using sign-invariant method for cross-machine reproducibility)
-  X <- Z <- lav_mvrnorm(n = n, mu = rep(0, nvar), Sigma = ICOR)
+  X <- Z <- lav_mvrnorm(n = n, mu = rep(0, nvar), sigma_1 = ICOR)
 
   # transform Z using Fleishman constants
   for (i in 1:nvar) {

@@ -11,7 +11,7 @@ lav_standardize_lv_x <- function(x, lavobject, partable = NULL, cov.std = TRUE,
       x = x.unrotated,
       lavmodel = lavmodel, # unrotated!
       lavoptions = lavobject@Options,
-      init.rot = lavmodel@H,
+      init_rot = lavmodel@H,
       type = "user",
       extra = TRUE
     )
@@ -44,7 +44,7 @@ lav_standardize_all_x <- function(x, lavobject, partable = NULL, cov.std = TRUE,
       x = x.unrotated,
       lavmodel = lavmodel, # unrotated!
       lavoptions = lavobject@Options,
-      init.rot = lavmodel@H,
+      init_rot = lavmodel@H,
       type = "user",
       extra = TRUE
     )
@@ -76,7 +76,7 @@ lav_standardize_all_nox_x <- function(x, lavobject, partable = NULL,
       x = x.unrotated,
       lavmodel = lavmodel, # unrotated!
       lavoptions = lavobject@Options,
-      init.rot = lavmodel@H,
+      init_rot = lavmodel@H,
       type = "user",
       extra = TRUE
     )

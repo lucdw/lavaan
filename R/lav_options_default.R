@@ -256,34 +256,34 @@ lav_options_default <- function() {
 
   # rotation-args sublist
   elm(c("rotation.args", "orthogonal"), FALSE, bl = TRUE)
-  elm(c("rotation.args", "row.weights"), "default", chr = c(
+  elm(c("rotation.args", "row_weights"), "default", chr = c(
     default = "default", kaiser = "kaiser", none = "none",
     cureton.mulaik = "cm", cm = "cm"))
-  elm(c("rotation.args", "std.ov"), TRUE, bl = TRUE)
-  elm(c("rotation.args", "geomin.epsilon"), 0.001, nm = "]0, 1.00]")
+  elm(c("rotation.args", "std_ov"), TRUE, bl = TRUE)
+  elm(c("rotation.args", "geomin_epsilon"), 0.001, nm = "]0, 1.00]")
   # was 0.01 < 0.6-10
-  elm(c("rotation.args", "orthomax.gamma"), 1, nm = "[0, 1]")
-  elm(c("rotation.args", "cf.gamma"), 0, nm = "[0, 1]")
-  elm(c("rotation.args", "oblimin.gamma"), 0, nm = "[0, 1000]")
-  elm(c("rotation.args", "promax.kappa"), 4, nm = "[0, 1000]")
+  elm(c("rotation.args", "orthomax_gamma"), 1, nm = "[0, 1]")
+  elm(c("rotation.args", "cf_gamma"), 0, nm = "[0, 1]")
+  elm(c("rotation.args", "oblimin_gamma"), 0, nm = "[0, 1000]")
+  elm(c("rotation.args", "promax_kappa"), 4, nm = "[0, 1000]")
   elm(c("rotation.args", "target"), matrix(0, 0L, 0L), oklen = c(0, 1e+32))
-  elm(c("rotation.args", "target.mask"), matrix(0, 0L, 0L), oklen = c(0, 1e+32))
+  elm(c("rotation.args", "target_mask"), matrix(0, 0L, 0L), oklen = c(0, 1e+32))
   elm(c("rotation.args", "rstarts"), 30L, nm = "[0, 1e+07]")
   elm(c("rotation.args", "algorithm"), "gpa", chr = c("gpa", "pairwise"))
   elm(c("rotation.args", "reflect"), TRUE, bl = TRUE)
-  elm(c("rotation.args", "order.lv.by"), "index",
+  elm(c("rotation.args", "order_lv_by"), "index",
       chr = c("sumofsquares", "index", "none"))
-  elm(c("rotation.args", "gpa.tol"), 1e-05, nm = "]0, 0.01]")
+  elm(c("rotation.args", "gpa_tol"), 1e-05, nm = "]0, 0.01]")
   elm(c("rotation.args", "tol"), 1e-08, nm = "]0, 0.01]")
   elm(c("rotation.args", "warn"), FALSE, bl = TRUE)
   elm(c("rotation.args", "verbose"), FALSE, bl = TRUE)
-  elm(c("rotation.args", "jac.init.rot"), TRUE, bl = TRUE)
-  elm(c("rotation.args", "max.iter"), 10000L, nm = "[0, 1e+12]")
-  elm(c("rotation.args", "mg.agreement"), FALSE, bl = TRUE)
-  elm(c("rotation.args", "mg.agreement.weight"), 0.5, nm = "[0, 1]")
-  elm(c("rotation.args", "mg.agreement.algorithm"), "pairwise",
+  elm(c("rotation.args", "jac_init_rot"), TRUE, bl = TRUE)
+  elm(c("rotation.args", "max_iter"), 10000L, nm = "[0, 1e+12]")
+  elm(c("rotation.args", "mg_agreement"), FALSE, bl = TRUE)
+  elm(c("rotation.args", "mg_agreement_weight"), 0.5, nm = "[0, 1]")
+  elm(c("rotation.args", "mg_agreement_algorithm"), "pairwise",
     chr = c("pairwise", "lg"))
-  elm(c("rotation.args", "mg.agreement.method"), "procrustes",
+  elm(c("rotation.args", "mg_agreement_method"), "procrustes",
     chr = c("procrustes", "loading.alignment"))
 
   # full data

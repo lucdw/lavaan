@@ -553,4 +553,3 @@ lav_partable_constraints_label_id <- function(partable, con = NULL,
 
   con.x.idx
 }
-

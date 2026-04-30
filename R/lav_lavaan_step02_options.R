@@ -106,6 +106,9 @@ lav_lavaan_step02_options <- function(slot_options = NULL, # nolint
     }
 
     # modifyList
+    if (is.list(dotdotdot$rotation.args)) {
+      names(dotdotdot$rotation.args) <- lav_snake_case(names(dotdotdot$rotation.args))
+    }
     opt <- modifyList(opt, dotdotdot)
 
     # extract estimator

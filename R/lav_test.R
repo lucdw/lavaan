@@ -797,5 +797,3 @@ lav_update_test_custom_h1 <- function(lav_obj_h0, lav_obj_h1) {
   lav_obj_h0@test <- newTEST
   lav_obj_h0
 }
-
-

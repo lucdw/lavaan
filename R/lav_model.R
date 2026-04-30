@@ -14,7 +14,7 @@ lav_model <- function(lavpartable = NULL,                          # nolint
                       th.idx = list()) {
   # handle bare-minimum partables
   lavpartable <- lav_partable_complete(lavpartable)
-  lavpta = lav_partable_attributes(lavpartable)
+  lavpta <- lav_partable_attributes(lavpartable)
   lavpartable <- lav_partable_set_cache(lavpartable, lavpta)
 
   # global info from user model

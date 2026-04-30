@@ -155,19 +155,19 @@ lav_efalist_summary_print <- function(x, nd = 3L, cutoff = 0.3,
     # method options
     if (x$rotation == "geomin") {
       c1 <- c(c1, "Geomin epsilon")
-      c2 <- c(c2, x$rotation.args$geomin.epsilon)
+      c2 <- c(c2, x$rotation.args$geomin_epsilon)
     } else if (x$rotation == "orthomax") {
       c1 <- c(c1, "Orthomax gamma")
-      c2 <- c(c2, x$rotation.args$orthomax.gamma)
+      c2 <- c(c2, x$rotation.args$orthomax_gamma)
     } else if (x$rotation == "cf") {
       c1 <- c(c1, "Crawford-Ferguson gamma")
-      c2 <- c(c2, x$rotation.args$cf.gamma)
+      c2 <- c(c2, x$rotation.args$cf_gamma)
     } else if (x$rotation == "oblimin") {
       c1 <- c(c1, "Oblimin gamma")
-      c2 <- c(c2, x$rotation.args$oblimin.gamma)
+      c2 <- c(c2, x$rotation.args$oblimin_gamma)
     } else if (x$rotation == "promax") {
       c1 <- c(c1, "Promax kappa")
-      c2 <- c(c2, x$rotation.args$promax.kappa)
+      c2 <- c(c2, x$rotation.args$promax_kappa)
     }
 
     # rotation algorithm
@@ -180,7 +180,7 @@ lav_efalist_summary_print <- function(x, nd = 3L, cutoff = 0.3,
 
     # Standardized metric (or not)
     c1 <- c(c1, "Standardized metric")
-    if (x$rotation.args$std.ov) {
+    if (x$rotation.args$std_ov) {
       c2 <- c(c2, "TRUE")
     } else {
       c2 <- c(c2, "FALSE")
@@ -188,7 +188,7 @@ lav_efalist_summary_print <- function(x, nd = 3L, cutoff = 0.3,
 
     # Row weights
     c1 <- c(c1, "Row weights")
-    tmp_txt <- x$rotation.args$row.weights
+    tmp_txt <- x$rotation.args$row_weights
     c2 <- c(c2, paste(toupper(substring(tmp_txt, 1, 1)),
       substring(tmp_txt, 2),
       sep = ""
@@ -236,7 +236,7 @@ lav_efalist_summary_print <- function(x, nd = 3L, cutoff = 0.3,
   # eigenvalues
   if (!is.null(x$model.list[[1]]$efa$eigvals[[1]])) {
     cat("\n")
-    if (x$model.list[[1]]$efa$std.ov) {
+    if (x$model.list[[1]]$efa$std_ov) {
       cat("Eigenvalues correlation matrix:\n")
     } else {
       cat("Eigenvalues covariance matrix:\n")

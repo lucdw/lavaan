@@ -127,7 +127,7 @@ lav_sam_step1 <- function(cmd = "sem", mm.list = NULL, mm.args = list(),
   # even if global model uses conditional.x = TRUE
   # this should not affect the measurement models (if the covariates act on
   # the structural part only)
-  lavoptions.mm$conditional.x = FALSE
+  lavoptions.mm$conditional.x <- FALSE
 
   # override with user-specified mm.args
   lavoptions.mm <- modifyList(lavoptions.mm, mm.args)
@@ -356,4 +356,3 @@ lav_sam_step1 <- function(cmd = "sem", mm.list = NULL, mm.args = list(),
 
   STEP1
 }
-

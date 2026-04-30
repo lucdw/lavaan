@@ -330,7 +330,7 @@ lav_matrix_vech_which_idx <- function(n = 1L, diagonal = TRUE,
   n <- as.integer(n)
   idx <- as.integer(idx)
   # if (lav_use_lavaanC()) {
-  #   return(lavaanC::m_vech_which_idx(n, diagonal, 
+  #   return(lavaanC::m_vech_which_idx(n, diagonal,
   #                         idx, type, add.idx.at.start))
   # }
   a <- matrix(FALSE, n, n)

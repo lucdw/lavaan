@@ -37,18 +37,17 @@ efa(data = NULL, nfactors = 1L, sample.cov = NULL, sample.nobs = NULL,
     the GPArotation package. The target method is in fact the pst method where
     all non-zero elements (in the target matrix) are ignored.
     Options for the rotation algorithm can be provided in the list after the method.
-    The
-   default options (and their alternatives) are \code{orthogonal = FALSE},
-   \code{row.weights = "default"} (or \code{"kaiser"},
-   \code{"cureton.mulaik"} or \code{"none"}), \code{std.ov = TRUE},
+    The default options (and their alternatives) are \code{orthogonal = FALSE},
+   \code{row_weights = "default"} (or \code{"kaiser"},
+   \code{"cureton.mulaik"} or \code{"none"}), \code{std_ov = TRUE},
    \code{algorithm = "gpa"} (or \code{"pairwise"}), \code{rstarts = 30},
-   \code{gpa.tol = 1e-05}, \code{tol = 1e-08}, \code{max.iter = 10000L},
+   \code{gpa_tol = 1e-05}, \code{tol = 1e-08}, \code{max_iter = 10000L},
    \code{warn = FALSE}, \code{verbose = FALSE}, \code{reflect = TRUE},
-   \code{order.lv.by = "index"} (or \code{"sumofsquares"} or \code{"none"}).
+   \code{order_lv_by = "index"} (or \code{"sumofsquares"} or \code{"none"}).
    Other options are specific for a particular rotation criterion: 
-   \code{geomin.epsilon = 0.001}, \code{orthomax.gamma = 1},
-   \code{promax.kappa = 4},
-   \code{cf.gamma = 0}, and \code{oblimin.gamma = 0}.}
+   \code{geomin_epsilon = 0.001}, \code{orthomax_gamma = 1},
+   \code{promax_kappa = 4},
+   \code{cf_gamma = 0}, and \code{oblimin_gamma = 0}.}
 \item{rotation.args}{List. Options related to the rotation algorithm. DEPRECATED.
    The options should now be given in the \code{rotation} argument as a list.}
 \item{ov.names}{Character vector. The variables names that are needed for
@@ -98,7 +97,7 @@ efa(data = NULL, nfactors = 1L, sample.cov = NULL, sample.nobs = NULL,
 fit <- efa(data = HolzingerSwineford1939, 
            ov.names = paste("x", 1:9, sep = ""),
            nfactors = 1:3,
-           rotation = list("geomin", geomin.epsilon = 0.01, rstarts = 1))
+           rotation = list("geomin", geomin_epsilon = 0.01, rstarts = 1))
 summary(fit, nd = 3L, cutoff = 0.2, dot.cutoff = 0.05)
 fitMeasures(fit, fit.measures = "all")
 

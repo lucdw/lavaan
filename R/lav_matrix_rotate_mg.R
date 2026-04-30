@@ -9,18 +9,18 @@ lav_matrix_rotate_mg <- function(a_list = NULL, # original matrices
                                  orthogonal = FALSE, # default is oblique
                                  method = "geomin", # default rot method
                                  method_args = list(
-                                   geomin.epsilon = 0.01,
-                                   orthomax.gamma = 1,
-                                   cf.gamma = 0,
-                                   oblimin.gamma = 0,
-                                   promax.kappa = 4,
+                                   geomin_epsilon = 0.01,
+                                   orthomax_gamma = 1,
+                                   cf_gamma = 0,
+                                   oblimin_gamma = 0,
+                                   promax_kappa = 4,
                                    target = matrix(0, 0, 0),
-                                   target.mask = matrix(0, 0, 0)
+                                   target_mask = matrix(0, 0, 0)
                                  ),
                                  init_rot_list = NULL, # initial rotation matrix
                                  init_rot_check = TRUE, #check if init ROT is ok
                                  rstarts = 30L, # number of random starts
-                                 # row.weights = "default", # row weighting
+                                 # row_weights = "default", # row weighting
                                  # std.ov = FALSE, # rescale ov
                                  # ov.var = NULL, # ov variances
                                  # algorithm = "gpa", # rotation algorithm
@@ -36,14 +36,14 @@ lav_matrix_rotate_mg <- function(a_list = NULL, # original matrices
 
   # check Alist
   if (!is.list(a_list)) {
-    lav_msg_stop(gettext("Alist does not seem to be a list"))
+    lav_msg_stop(gettext("a_list does not seem to be a list"))
   }
   ngroups <- length(a_list)
 
   # check A
   a <- a_list[[1]]
   if (!inherits(a, "matrix")) {
-    lav_msg_stop(gettext("A does not seem to be a matrix"))
+    lav_msg_stop(gettext("a does not seem to be a matrix"))
   }
 
   p <- nrow(a)
@@ -52,7 +52,7 @@ lav_matrix_rotate_mg <- function(a_list = NULL, # original matrices
     res <- list(
       lambdaList = a_list, rotList = NULL,
       orthogonal = orthogonal, method = "none",
-      method.args = list(), row.weights = "none",
+      method.args = list(), row_weights = "none",
       algorithm = "none", iter = 0L, converged = TRUE,
       method.value = 0
     )
@@ -99,7 +99,7 @@ lav_matrix_rotate_mg <- function(a_list = NULL, # original matrices
     "cf-parsimax", "cf-facparsim"
   )) {
     method_fname <- "lav_matrix_rotate_cf"
-    method_args$cf.gamma <- switch(method,
+    method_args$cf_gamma <- switch(method,
       "cf-quartimax" = 0,
       "cf-varimax"   = 1 / p,
       "cf-equamax"   = m / (2 * p),
@@ -137,16 +137,16 @@ lav_matrix_rotate_mg <- function(a_list = NULL, # original matrices
     }
   }
   if (method == "pst") {
-    target_mask <- method_args$target.mask
+    target_mask <- method_args$target_mask
     if (is.list(target_mask)) {
-      method_args$target.mask <- target_mask <- target_mask[[1L]]
+      method_args$target_mask <- target_mask <- target_mask[[1L]]
     }
-    # check dimension of target.mask/A
+    # check dimension of target_mask/A
     if (nrow(target_mask) != nrow(a)) {
-      lav_msg_stop(gettext("nrow(target.mask) != nrow(A)"))
+      lav_msg_stop(gettext("nrow(target_mask) != nrow(A)"))
     }
     if (ncol(target_mask) != ncol(a)) {
-      lav_msg_stop(gettext("col(target.mask) != ncol(A)"))
+      lav_msg_stop(gettext("col(target_mask) != ncol(A)"))
     }
   }
   # we keep this here, so lav_matrix_rotate() can be used independently
@@ -155,7 +155,7 @@ lav_matrix_rotate_mg <- function(a_list = NULL, # original matrices
     method_fname <- "lav_matrix_rotate_pst"
     target_mask <- matrix(1, nrow = nrow(target), ncol = ncol(target))
     target_mask[is.na(target)] <- 0
-    method_args$target.mask <- target_mask
+    method_args$target_mask <- target_mask
   }
 
   # set orthogonal option
@@ -220,14 +220,14 @@ lav_matrix_rotate_mg <- function(a_list = NULL, # original matrices
     }
   } # group
 
-  #  # set row.weights
-  #  row.weights <- tolower(row.weights)
-  #  if (row.weights == "default") {
+  #  # set row_weights
+  #  row_weights <- tolower(row_weights)
+  #  if (row_weights == "default") {
   #    # the default is "none", except for varimax
   #    if (method %in% c("varimax", "promax")) {
-  #      row.weights <- "kaiser"
+  #      row_weights <- "kaiser"
   #    } else {
-  #      row.weights <- "none"
+  #      row_weights <- "none"
   #    }
   #  }
 
@@ -246,14 +246,14 @@ lav_matrix_rotate_mg <- function(a_list = NULL, # original matrices
   #     A <- A * 1 / sqrt(ov.var)
   #   }
   #
-  #   if (row.weights == "none") {
+  #   if (row_weights == "none") {
   #     weights <- rep(1.0, P)
-  #   } else if (row.weights == "kaiser") {
+  #   } else if (row_weights == "kaiser") {
   #     weights <- lav_matrix_rotate_kaiser_weights(A)
-  #   } else if (row.weights == "cureton-mulaik") {
+  #   } else if (row_weights == "cureton-mulaik") {
   #     weights <- lav_matrix_rotate_cm_weights(A)
   #   } else {
-  #     lav_msg_stop(gettext("row.weights can be none,
+  #     lav_msg_stop(gettext("row_weights can be none,
   #                    kaiser or cureton-mulaik"))
   #   }
   #   A <- A * weights
@@ -377,7 +377,7 @@ lav_matrix_rotate_mg <- function(a_list = NULL, # original matrices
     lambdaList = lambda_list, rotList = rot_list,
     orderList = order_list,
     orthogonal = orthogonal, method = method,
-    method.args = method_args, row.weights = "none"
+    method_args = method_args, row_weights = "none"
   )
 
   # add method info

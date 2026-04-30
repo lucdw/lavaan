@@ -318,5 +318,3 @@ lav_mvnorm_missing_h1_omega_sw <- function(Y = NULL,
 
   SW
 }
-
-

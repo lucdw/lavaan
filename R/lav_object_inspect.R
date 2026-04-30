@@ -3449,5 +3449,3 @@ lav_object_inspect_sargan <- function(object, drop.list.single.group = FALSE) {
 
   return.value
 }
-
-

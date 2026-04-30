@@ -515,14 +515,3 @@ fit@baseline$test$standard
 #    eg lav_model_objective_gls() or lav_model_objective_ml() # see lav_objective.R
 # 3) if multiple groups, combine the values using group weights
 # 4) return value (fx)
-
-
-
-
-
-
-
-
-
-
-

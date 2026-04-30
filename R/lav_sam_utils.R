@@ -1004,5 +1004,3 @@ lav_sam_veta_con <- function(S = NULL, LAMBDA = NULL, THETA = NULL,
 
   VETA.new
 }
-
-
