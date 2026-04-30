@@ -145,7 +145,7 @@ lav_lavaanlist_summary <- function(object,
 
       # SE?
       if (sim_args$se.bias) {
-        se_obs_1 <- apply(est, 1L, lav_sample_trimmed_sd, na.rm = TRUE,
+        se_obs_1 <- apply(est, 1L, lav_sample_trimmed_sd, na_rm = TRUE,
                         trim = sim_args$trim)
         if (length(se_obs_1) > nel) {
           se_obs_1 <- se_obs_1[seq_len(nel)]

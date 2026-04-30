@@ -55,9 +55,9 @@ lav_efa_summary <- function(object,
   names(PSI) <- NULL
 
   # eigenvalues correlation matrix
-  std.ov <- object@Options$rotation.args$std.ov
+  std_ov <- object@Options$rotation.args$std_ov
   COV <- object@h1$implied$cov # h1
-  if (std.ov) {
+  if (std_ov) {
     COV <- lapply(COV, cov2cor)
   }
   eigvals <- NULL
@@ -294,7 +294,7 @@ lav_efa_summary <- function(object,
   res <- list(
     nblocks = nblocks,
     block.label = block.label,
-    std.ov = std.ov,
+    std_ov = std_ov,
     eigvals = eigvals,
     sumsq.table = sumsq.table,
     orthogonal = object@Options$rotation.args$orthogonal,

@@ -354,7 +354,7 @@ lav_bootstrap_internal <- function(object = NULL,
       for (g in 1:lavdata_1@ngroups) {
         data_x[[g]] <- lav_mvrnorm(
           n = lavdata_1@nobs[[g]],
-          Sigma = sigma_hat[[g]],
+          sigma_1 = sigma_hat[[g]],
           mu = mu_hat[[g]]
         )
       }

@@ -2102,4 +2102,3 @@ lav_predict_tmat_det_internal <- function(Sigma = NULL, Veta = NULL,
     tmat <- Veta.sqrt %*% tmp.sqrt %*% Veta.inv.sqrt
     tmat
 }
-

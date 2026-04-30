@@ -4,7 +4,7 @@
 
 # multivariate normal random number generation
 # replacement for MASS::mvrnorm for better cross-machine reproducibility
-# see: https://blog.djnavarro.net/posts/2025-05-18_multivariate-normal-sampling-floating-point/
+# see: https://blog.djnavarro.net/posts/2025-05-18_multivariate-normal-sampling-floating-point/  # nolint
 #
 # the issue with MASS::mvrnorm is that it uses eigendecomposition with a
 # transformation matrix (sqrt(Lambda) Q') that is NOT invariant to eigenvector
@@ -15,12 +15,12 @@
 # - chol: unique factorization
 # eigen is the default to match MASS::mvrnorm's approach while fixing the
 # sign-flip issue with the invariant formula
-lav_mvrnorm <- function(n = 1, mu, Sigma, tol = 1e-06, empirical = FALSE,
-                        method = "eigen", checkSymmetry = TRUE, byrow = FALSE) {
+lav_mvrnorm <- function(n = 1, mu, sigma_1, tol = 1e-06, empirical = FALSE,
+                      method = "eigen", check_symmetry = TRUE, byrow = FALSE) {
   p <- length(mu)
 
   # check symmetry (like mvtnorm)
-  if (checkSymmetry && !isSymmetric(Sigma,
+  if (check_symmetry && !isSymmetric(sigma_1,
     tol = sqrt(.Machine$double.eps),
     check.attributes = FALSE
   )) {
@@ -28,62 +28,62 @@ lav_mvrnorm <- function(n = 1, mu, Sigma, tol = 1e-06, empirical = FALSE,
   }
 
   # check dimensions (like mvtnorm)
-  if (p != nrow(Sigma)) {
+  if (p != nrow(sigma_1)) {
     lav_msg_stop(gettext("incompatible arguments in lav_mvrnorm"))
   }
 
   # compute transformation matrix R based on method (following mvtnorm exactly)
   method <- match.arg(method, c("chol", "eigen", "svd"))
 
-  R <- if (method == "eigen") {
-    ev <- eigen(Sigma, symmetric = TRUE)
+  r <- if (method == "eigen") {
+    ev <- eigen(sigma_1, symmetric = TRUE)
     if (!all(ev$values >= -tol * abs(ev$values[1L]))) {
       warning("sigma is numerically not positive semidefinite")
     }
     # Q sqrt(Lambda) Q' - invariant to sign flips
     t(ev$vectors %*% (t(ev$vectors) * sqrt(pmax(ev$values, 0))))
   } else if (method == "svd") {
-    s. <- svd(Sigma)
-    if (!all(s.$d >= -tol * abs(s.$d[1L]))) {
+    s <- svd(sigma_1)
+    if (!all(s$d >= -tol * abs(s$d[1L]))) {
       warning("sigma is numerically not positive semidefinite")
     }
-    t(s.$v %*% (t(s.$u) * sqrt(pmax(s.$d, 0))))
+    t(s$v %*% (t(s$u) * sqrt(pmax(s$d, 0))))
   } else if (method == "chol") {
-    R <- chol(Sigma, pivot = TRUE)
-    R[, order(attr(R, "pivot"))]
+    r <- chol(sigma_1, pivot = TRUE)
+    r[, order(attr(r, "pivot"))]
   }
 
   # for names (fallback to dimnames of Sigma if mu has no names)
   nm <- names(mu)
-  if (is.null(nm) && !is.null(dn <- dimnames(Sigma))) {
+  if (is.null(nm) && !is.null(dn <- dimnames(sigma_1))) {
     nm <- dn[[1L]]
   }
 
   if (empirical) {
     # generate standard normal, then apply empirical transformation
-    X <- matrix(stats::rnorm(p * n), n, p, byrow = byrow)
-    X <- scale(X, center = TRUE, scale = FALSE) # center
-    X <- X %*% svd(X, nu = 0)$v # orthogonalize
-    X <- scale(X, center = FALSE, scale = TRUE) # unit variance
+    x <- matrix(stats::rnorm(p * n), n, p, byrow = byrow)
+    x <- scale(x, center = TRUE, scale = FALSE) # center
+    x <- x %*% svd(x, nu = 0)$v # orthogonalize
+    x <- scale(x, center = FALSE, scale = TRUE) # unit variance
 
     # transform by R
-    X <- sweep(X %*% R, 2, mu, "+")
-    colnames(X) <- nm
+    x <- sweep(x %*% r, 2, mu, "+")
+    colnames(x) <- nm
 
-    if (n == 1) drop(X) else X
+    if (n == 1) drop(x) else x
   } else {
     # generate samples (following mvtnorm exactly)
-    X <- matrix(stats::rnorm(n * p), nrow = n, byrow = byrow) %*% R
-    X <- sweep(X, 2, mu, "+")
-    colnames(X) <- nm
+    x <- matrix(stats::rnorm(n * p), nrow = n, byrow = byrow) %*% r
+    x <- sweep(x, 2, mu, "+")
+    colnames(x) <- nm
 
-    if (n == 1) drop(X) else X
+    if (n == 1) drop(x) else x
   }
 }
 
 # sd with trimming
-lav_sample_trimmed_sd <- function(x, na.rm = TRUE, trim = 0) {
-  if (isTRUE(na.rm)) {
+lav_sample_trimmed_sd <- function(x, na_rm = TRUE, trim = 0) {
+  if (isTRUE(na_rm)) {
     x <- x[!is.na(x)]
   }
   n <- length(x)
@@ -106,7 +106,7 @@ lav_sample_trimmed_sd <- function(x, na.rm = TRUE, trim = 0) {
 
 # convert correlation matrix + standard deviations to covariance matrix
 # based on cov2cor in package:stats
-lav_cor2cov <- function(R, sds, names = NULL) {
+lav_cor2cov <- function(R, sds, names = NULL) {             # nolint
   p <- (d <- dim(R))[1L]
   if (!is.numeric(R) || length(d) != 2L || p != d[2L]) {
     lav_msg_stop(gettext("'V' is not a square numeric matrix"))
@@ -126,16 +126,16 @@ lav_cor2cov <- function(R, sds, names = NULL) {
                          have a different number of variables"))
   }
 
-  S <- R
-  S[] <- sds * R * rep(sds, each = p)
+  s <- R
+  s[] <- sds * R * rep(sds, each = p)
 
   # optionally, add names
   if (!is.null(names)) {
     stopifnot(length(names) == p)
-    rownames(S) <- colnames(S) <- names
+    rownames(s) <- colnames(s) <- names
   }
 
-  S
+  s
 }
 
 # convert characters within single quotes to numeric vector
@@ -143,9 +143,9 @@ lav_cor2cov <- function(R, sds, names = NULL) {
 #     x <- lav_char2num(s)
 lav_char2num <- function(s = "") {
   # first, strip all ',' or ';'
-  s. <- gsub(",", " ", s)
-  s. <- gsub(";", " ", s.)
-  tc <- textConnection(s.)
+  s_1 <- gsub(",", " ", s)
+  s_1 <- gsub(";", " ", s_1)
+  tc <- textConnection(s_1)
   x <- scan(tc, quiet = TRUE)
   close(tc)
   x
@@ -159,28 +159,27 @@ lav_getcov <- function(x, lower = TRUE, diagonal = TRUE, sds = NULL,
   if (is.character(x)) x <- lav_char2num(x)
   if (is.character(sds)) sds <- lav_char2num(sds)
 
-  nels <- length(x)
   if (lower) {
-    COV <- lav_matrix_lower2full(x, diagonal = diagonal)
+    cov_1 <- lav_matrix_lower2full(x, diagonal = diagonal)
   } else {
-    COV <- lav_matrix_upper2full(x, diagonal = diagonal)
+    cov_1 <- lav_matrix_upper2full(x, diagonal = diagonal)
   }
-  nvar <- ncol(COV)
+  nvar <- ncol(cov_1)
 
   # if diagonal is false, assume unit diagonal
-  if (!diagonal) diag(COV) <- 1
+  if (!diagonal) diag(cov_1) <- 1
 
   # check if we have a sds argument
   if (!is.null(sds)) {
     stopifnot(length(sds) == nvar)
-    COV <- lav_cor2cov(COV, sds)
+    cov_1 <- lav_cor2cov(cov_1, sds)
   }
 
   # names
   stopifnot(length(names) == nvar)
-  rownames(COV) <- colnames(COV) <- names
+  rownames(cov_1) <- colnames(cov_1) <- names
 
-  COV
+  cov_1
 }
 
 lav_char2hash <- function(s = "") {
@@ -189,9 +188,9 @@ lav_char2hash <- function(s = "") {
   rval <- 0x7EDCBA98L
   for (i in nums) {
     positions <- 1L + (bitwAnd(i, 15L))
-    bitsR <- bitwShiftL(1L, positions) - 1L
-    wrap1 <- bitwShiftL(bitwAnd(bitsR, rval), 31L - positions)
-    wrap2 <- bitwShiftR(bitwAnd(bitwNot(bitsR), rval), positions)
+    bits_r <- bitwShiftL(1L, positions) - 1L
+    wrap1 <- bitwShiftL(bitwAnd(bits_r, rval), 31L - positions)
+    wrap2 <- bitwShiftR(bitwAnd(bitwNot(bits_r), rval), positions)
     saw <- bitwOr(wrap1, wrap2)
     rval <- bitwXor(saw, i)
   }
@@ -201,17 +200,17 @@ lav_char2hash <- function(s = "") {
 # vectorize all (h0 or h1) sample statistics, in the same order
 # as Gamma
 lav_implied_to_vec <- function(implied = NULL, lavmodel = NULL,
-                               drop.list = TRUE) {
+                               drop_list = TRUE) {
   ngroups <- lavmodel@ngroups
 
   wls_obs <- vector("list", ngroups)
   for (g in seq_len(ngroups)) {
 
     var <- NULL
-    res.var <- NULL
+    res_var <- NULL
     if (lavmodel@conditional.x) {
-      res.var <- diag(implied$res.cov[[g]])
-      res.var <- res.var[res.var != 1]
+      res_var <- diag(implied$res.cov[[g]])
+      res_var <- res_var[res_var != 1]
     } else {
       var <- diag(implied$cov[[g]])
       var <- var[var != 1]
@@ -228,7 +227,7 @@ lav_implied_to_vec <- function(implied = NULL, lavmodel = NULL,
       # conditional.x
       res.int.g = implied$res.int[[g]],
       res.cov.g = implied$res.cov[[g]],
-      res.var.g = res.var,
+      res.var.g = res_var,
       res.th.g = implied$res.th[[g]],
       res.slopes.g = implied$res.slopes[[g]],
       group.w.g = implied$group.w[[g]],
@@ -243,7 +242,7 @@ lav_implied_to_vec <- function(implied = NULL, lavmodel = NULL,
     )
   }
 
-  if (drop.list) {
+  if (drop_list) {
     out <- unlist(wls_obs)
   } else {
     out <- wls_obs
@@ -267,10 +266,10 @@ lav_vec_to_implied <- function(x = NULL, lavmodel) {
     # if group.w.free, always comes first
     if (lavmodel@group.w.free) {
       idx <- 1L
-      group.w <- x[idx]
+      group_w <- x[idx]
       x <- x[-idx]
     } else {
-      group.w <- 1
+      group_w <- 1
     }
 
     if (lavmodel@categorical) {
@@ -289,17 +288,17 @@ lav_vec_to_implied <- function(x = NULL, lavmodel) {
       mean_g <- rep(0, nvar)
       var_g <- rep(1, nvar)
       if (any(lavmodel@th.idx[[g]] == 0)) {
-        num.idx <- seq_len(nvar)
-        num.idx <- num.idx[!num.idx %in% lavmodel@th.idx[[g]]]
-        idx <- seq_len(length(num.idx))
-        var_g[num.idx] <- x[idx]
+        num_idx <- seq_len(nvar)
+        num_idx <- num_idx[!num_idx %in% lavmodel@th.idx[[g]]]
+        idx <- seq_along(num_idx)
+        var_g[num_idx] <- x[idx]
         x <- x[-idx]
         # FIXME: change sign?
-        mean_g[num.idx] <- th_g[lavmodel@th.idx[[g]] == 0]
+        mean_g[num_idx] <- th_g[lavmodel@th.idx[[g]] == 0]
       }
 
       # cov - lower only
-      idx <- seq_len( nvar * (nvar - 1) / 2 )
+      idx <- seq_len(nvar * (nvar - 1) / 2)
       cov_g <- lav_matrix_vech_reverse(x[idx], diagonal = FALSE)
       x <- x[-idx]
       diag(cov_g) <- var_g
@@ -327,9 +326,9 @@ lav_vec_to_implied <- function(x = NULL, lavmodel) {
         mean_g <- numeric(nvar)
       }
       if (diag_flag) {
-        idx <- seq_len( nvar * (nvar + 1) / 2 )
+        idx <- seq_len(nvar * (nvar + 1) / 2)
       } else {
-        idx <- seq_len( nvar * (nvar - 1) / 2 )
+        idx <- seq_len(nvar * (nvar - 1) / 2)
       }
       cov_g <- lav_matrix_vech_reverse(x[idx], diagonal = diag_flag)
       x <- x[-idx]
@@ -340,7 +339,7 @@ lav_vec_to_implied <- function(x = NULL, lavmodel) {
       implied$th[g] <- list(NULL)
     }
 
-    implied$group.w[[g]] <- group.w
+    implied$group.w[[g]] <- group_w
   }
 
   implied
@@ -371,14 +370,14 @@ lav_vec_to_implied <- function(x = NULL, lavmodel) {
 #
 # optionally, return H = solve(t(Delta) %*% W %*% Delta) %*% t(Delta) %*% W
 # as an attribute
-lav_utils_wls_linearization <- function(Delta = NULL, S = NULL,
+lav_utils_wls_linearization <- function(delta = NULL, s = NULL,
                                         meanstructure = FALSE,
                                         categorical = FALSE,
                                         #fixed.x = FALSE, # FIXME: needed?
                                         #x.idx = integer(0L),
                                         svec = NULL,
-                                        return_H = FALSE) {
-  nvar <- nrow(S)
+                                        return_h = FALSE) {
+  nvar <- nrow(s)
   if (categorical) {
     meanstructure <- FALSE
     # all ordinal (for now)
@@ -387,7 +386,8 @@ lav_utils_wls_linearization <- function(Delta = NULL, S = NULL,
     pstar <- nvar * (nvar + 1L) / 2L
   }
 
-  jac_cov <- Delta; nc <- ncol(jac_cov)
+  jac_cov <- delta
+  nc <- ncol(jac_cov)
   s_cov <- svec
 
   # vech
@@ -395,77 +395,102 @@ lav_utils_wls_linearization <- function(Delta = NULL, S = NULL,
 
   # split Delta/svec
   if (categorical) {
-    cov_idx  <- seq(nrow(Delta) - pstar + 1L, nrow(Delta))
-    jac_cov  <- Delta[cov_idx, , drop = FALSE]
+    cov_idx  <- seq(nrow(delta) - pstar + 1L, nrow(delta))
+    jac_cov  <- delta[cov_idx, , drop = FALSE]
     s_cov    <- svec[cov_idx]
   } else if (!categorical && meanstructure) {
     mean_idx <- seq_len(nvar)
-    jac_mean <- Delta[ mean_idx, , drop = FALSE]
-    jac_cov <- Delta[-mean_idx, , drop = FALSE]
+    jac_mean <- delta[mean_idx, , drop = FALSE]
+    jac_cov <- delta[-mean_idx, , drop = FALSE]
     s_mean <- svec[mean_idx]
     s_cov <- svec[-mean_idx]
     w[lav_matrix_diagh_idx(nvar)] <- 0.5
-  } else if (nrow(Delta) != pstar) {
+  } else if (nrow(delta) != pstar) {
     lav_msg_stop(gettext("nrow(Delta) != pstar"))
   }
 
   # special case: S = I (ULS)
-  uls.flag <- isTRUE(all.equal(S, diag(nvar), check.attributes = FALSE))
-  if (uls.flag || categorical) {
+  uls_flag <- isTRUE(all.equal(s, diag(nvar), check.attributes = FALSE))
+  if (uls_flag || categorical) {
     # cov part
     q_cov <- w * jac_cov
-    A <- crossprod(jac_cov, q_cov)
+    a <- crossprod(jac_cov, q_cov)
     b <- drop(crossprod(q_cov, s_cov))
 
     # mean part
     if (!categorical && meanstructure) {
-      A <- A + crossprod(jac_mean)
+      a <- a + crossprod(jac_mean)
       b <- b + drop(crossprod(jac_mean, s_mean))
     }
 
     # tQ only needed if H is requested
-    if (return_H) {
-      tQ <- t(q_cov)
-      if (meanstructure) tQ <- cbind(t(jac_mean), tQ)
+    if (return_h) {
+      t_q <- t(q_cov)
+      if (meanstructure) t_q <- cbind(t(jac_mean), t_q)
     }
   } else {
     # S inverse
-    cS <- chol(S); Si <- chol2inv(cS)
+    c_s <- chol(s)
+    si <- chol2inv(c_s)
 
     # cov part
     q_cov <- matrix(0, pstar, nc)
     for (j in seq_len(nc)) {
       vmat <- lav_matrix_vech_reverse(jac_cov[, j])
-      W <- Si %*% vmat %*% Si
-      q_cov[, j] <- w * lav_matrix_vech(W)
+      m_w <- si %*% vmat %*% si
+      q_cov[, j] <- w * lav_matrix_vech(m_w)
     }
 
-    A <- crossprod(jac_cov, q_cov)
+    a <- crossprod(jac_cov, q_cov)
     b <- drop(crossprod(q_cov, s_cov))
 
     # mean part
     if (meanstructure) {
-      q_mean <- backsolve(cS, forwardsolve(t(cS), jac_mean))
-      A <- A + crossprod(jac_mean, q_mean)
+      q_mean <- backsolve(c_s, forwardsolve(t(c_s), jac_mean))
+      a <- a + crossprod(jac_mean, q_mean)
       b <- b + drop(crossprod(q_mean, s_mean))
     }
 
-    if (return_H) {
-      tQ <- t(q_cov)
-      if (meanstructure) tQ <- cbind(t(q_mean), tQ)
+    if (return_h) {
+      t_q <- t(q_cov)
+      if (meanstructure) t_q <- cbind(t(q_mean), t_q)
     }
   }
 
-  R <- chol(A)
-  if (!return_H) {
-    out <- backsolve(R, forwardsolve(t(R), b))
+  r <- chol(a)
+  if (!return_h) {
+    out <- backsolve(r, forwardsolve(t(r), b))
   } else {
-    Ainv  <- chol2inv(R)
-    out <- drop(Ainv %*% b)
-    H <- Ainv %*% tQ
-    attr(out, "H") <- H
+    ainv  <- chol2inv(r)
+    out <- drop(ainv %*% b)
+    h <- ainv %*% t_q
+    attr(out, "H") <- h
   }
 
   out
 }
 
+# function to transform names of variables to snake_case
+# this function is used mainly to rename function arguments given in a list
+#     where 'old' names are still accepted to avoid breaking other packages
+lav_snake_case <- function(old_names) {
+  curval <- c("B", "C", "D", "E", "K", "W", "PI",
+             "TAU", "DELTA", "NU", "LAMBDA", "eXo",
+              "WMAT", "THETA", "ALPHA", "BETA", "GAMMA", "PSI",
+              "SminTheta")
+  newval <- c("m_b", "m_c", "m_d", "m_e", "m_k", "m_w", "pi0",
+             "mm_tau", "mm_delta", "mm_nu", "mm_lambda", "exo",
+             "mm_wmat", "mm_theta", "mm_alpha", "mm_beta", "mm_gamma", "mm_psi",
+             "s_min_theta")
+  # transform dot.case and CamelCase to snake_case
+  varnames_new <- tolower(chartr(".", "_",
+                   gsub("([a-z])([A-Z])", "\\1_\\2", old_names)))
+  # apply standard modifications
+  mtch <- match(old_names, curval)
+  for (j in seq_along(old_names)) {
+    if (!is.na(mtch[j])) varnames_new[j] <- newval[mtch[j]]
+  }
+  # remove trailing underscores in new names
+  varnames_new <- gsub("_$", "", varnames_new)
+  varnames_new
+}

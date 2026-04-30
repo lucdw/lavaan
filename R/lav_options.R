@@ -184,6 +184,10 @@ lav_options_set <- function(opt = NULL) {
     }
   }
 
+  if (is.list(opt$rotation.args)) {
+    names(opt$rotation.args) <- lav_snake_case(names(opt$rotation.args))
+  }
+
   # check options with definitions ####
   opt <- lav_options_check(opt, opt_check, "")
 
@@ -1094,6 +1098,9 @@ lav_options_set <- function(opt = NULL) {
     lav_msg_stop(gettext("rotation.args should be be list."))
   }
 
+  # transform names rotation.args to snake_case
+  names(opt$rotation.args) <- lav_snake_case(names(opt$rotation.args))
+
   # force orthogonal for some rotation algorithms
   if (any(opt$rotation == c(
     "varimax", "entropy", "mccammon",
@@ -1116,17 +1123,17 @@ lav_options_set <- function(opt = NULL) {
     } else if (!is.matrix(target)) {
       lav_msg_stop(gettext("rotation target matrix is not a matrix"))
     }
-    opt$rotation.args$order.lv.by <- "none"
+    opt$rotation.args$order_lv_by <- "none"
   }
 
   if (opt$rotation == "pst") {
-    target_mask <- opt$rotation.args$target.mask
+    target_mask <- opt$rotation.args$target_mask
     if (is.null(target_mask) || length(target_mask) == 0L) {
-      # lav_msg_stop(gettext("rotation target.mask matrix is NULL"))
+      # lav_msg_stop(gettext("rotation target_mask matrix is NULL"))
       if (is.matrix(target)) {
         tmp <- matrix(1L, nrow = nrow(target), ncol = ncol(target))
         tmp[target != 0] <- 0L # ignore these (non-zero) elements
-        opt$rotation.args$target.mask <- target_mask <- tmp
+        opt$rotation.args$target_mask <- target_mask <- tmp
       } else if (is.list(target)) {
         out <- lapply(seq_along(target), function(g) {
           tmp <- matrix(1L,
@@ -1136,31 +1143,31 @@ lav_options_set <- function(opt = NULL) {
           tmp[target[[g]] != 0] <- 0L # ignore these (non-zero) elements
           tmp
         })
-        opt$rotation.args$target.mask <- target_mask <- out
+        opt$rotation.args$target_mask <- target_mask <- out
       }
     }
     if (is.list(target_mask)) {
       if (!all(sapply(target_mask, is.matrix))) {
-        lav_msg_stop(gettext("the target.mask list contains
+        lav_msg_stop(gettext("the target_mask list contains
                               elements that are not a matrix"))
       }
     } else if (!is.matrix(target_mask)) {
-      lav_msg_stop(gettext("rotation target.mask matrix is not a matrix"))
+      lav_msg_stop(gettext("rotation target_mask matrix is not a matrix"))
     }
     if (is.list(target) && !is.list(target_mask)) {
-      lav_msg_stop(gettext("target is a list, but target.mask is not a list"))
+      lav_msg_stop(gettext("target is a list, but target_mask is not a list"))
     }
     if (is.list(target_mask) && !is.list(target)) {
-      lav_msg_stop(gettext("target.mask is a list, but target is not a list"))
+      lav_msg_stop(gettext("target_mask is a list, but target is not a list"))
     }
     if (is.list(target) && is.list(target_mask)) {
       if (length(target) != length(target_mask)) {
-        lav_msg_stop(gettext("length(target) != length(target.mask)"))
+        lav_msg_stop(gettext("length(target) != length(target_mask)"))
       }
     }
   }
 
-  # if NAs, force opt$rotation to be 'pst' and create target.mask
+  # if NAs, force opt$rotation to be 'pst' and create target_mask
   if (opt$rotation == "target.strict") {
     # matrix
     warn_flag <- FALSE
@@ -1169,7 +1176,7 @@ lav_options_set <- function(opt = NULL) {
       opt$rotation <- "pst"
       target_mask <- matrix(1, nrow = nrow(target), ncol = ncol(target))
       target_mask[is.na(target)] <- 0
-      opt$rotation.args$target.mask <- target_mask
+      opt$rotation.args$target_mask <- target_mask
 
       # list
     } else if (is.list(target)) {
@@ -1177,9 +1184,9 @@ lav_options_set <- function(opt = NULL) {
       for (g in seq_len(ngroups)) {
         if (anyNA(target[[g]])) {
           warn_flag <- TRUE
-          # is target.mask just a <0 x 0 matrix>? create list!
-          if (is.matrix(opt$rotation.args$target.mask)) {
-            opt$rotation.args$target.mask <- vector("list", length = ngroups)
+          # is target_mask just a <0 x 0 matrix>? create list!
+          if (is.matrix(opt$rotation.args$target_mask)) {
+            opt$rotation.args$target_mask <- vector("list", length = ngroups)
           }
           opt$rotation <- "pst"
           target_mask <- matrix(1,
@@ -1187,7 +1194,7 @@ lav_options_set <- function(opt = NULL) {
             ncol = ncol(target[[g]])
           )
           target_mask[is.na(target[[g]])] <- 0
-          opt$rotation.args$target.mask[[g]] <- target_mask
+          opt$rotation.args$target_mask[[g]] <- target_mask
         }
       }
     }
@@ -1198,14 +1205,14 @@ lav_options_set <- function(opt = NULL) {
     }
   }
 
-  # set row.weights
-  opt$rotation.args$row.weights <- tolower(opt$rotation.args$row.weights)
-  if (opt$rotation.args$row.weights == "default") {
+  # set row_weights
+  opt$rotation.args$row_weights <- tolower(opt$rotation.args$row_weights)
+  if (opt$rotation.args$row_weights == "default") {
     # the default is "none", except for varimax and promax
     if (any(opt$rotation == c("varimax", "promax"))) {
-      opt$rotation.args$row.weights <- "kaiser"
+      opt$rotation.args$row_weights <- "kaiser"
     } else {
-      opt$rotation.args$row.weights <- "none"
+      opt$rotation.args$row_weights <- "none"
     }
   }
 
@@ -1214,7 +1221,7 @@ lav_options_set <- function(opt = NULL) {
     "bi-geomin", "bigeomin", "bi-quartimin",
     "biquartimin"
   ))) {
-    opt$rotation.args$order.lv.by <- "none"
+    opt$rotation.args$order_lv_by <- "none"
   }
 
   # no standard errors for promax (for now)...

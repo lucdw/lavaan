@@ -1058,5 +1058,3 @@ lav_sam_gamma_add <- function(STEP1 = NULL, FIT = NULL, group = 1L) {
   Gamma.addition <- N * (CVETA %*% STEP1$Sigma.11 %*% t(CVETA))
   Gamma.addition
 }
-
-

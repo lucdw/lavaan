@@ -37,15 +37,15 @@
 # gamma = 1/P -> equamax
 # gamma = 1   -> varimax
 #
-lav_matrix_rotate_orthomax <- function(LAMBDA = NULL, orthomax.gamma = 1, # nolint
+lav_matrix_rotate_orthomax <- function(mm_lambda = NULL, orthomax_gamma = 1, # nolint
                                        ..., grad = FALSE) {
-  l2 <- LAMBDA * LAMBDA
+  l2 <- mm_lambda * mm_lambda
   # center L2 column-wise
-  c_l2 <- t(t(l2) - orthomax.gamma * colMeans(l2))
+  c_l2 <- t(t(l2) - orthomax_gamma * colMeans(l2))
   out <- -1 * sum(l2 * c_l2) / 4
 
   if (grad) {
-    attr(out, "grad") <- -1 * LAMBDA * c_l2
+    attr(out, "grad") <- -1 * mm_lambda * c_l2
   }
 
   out
@@ -66,28 +66,28 @@ lav_matrix_rotate_orthomax <- function(LAMBDA = NULL, orthomax.gamma = 1, # noli
 # the Crawford-Ferguson family is also equivalent to the oblimin family
 # if the latter is restricted to orthogonal rotation
 #
-lav_matrix_rotate_cf <- function(LAMBDA = NULL, cf.gamma = 0, ...,   # nolint
+lav_matrix_rotate_cf <- function(mm_lambda = NULL, cf_gamma = 0, ...,   # nolint
                                  grad = FALSE) {
   # check if gamma is between 0 and 1?
-  n_row <- nrow(LAMBDA)
-  n_col <- ncol(LAMBDA)
+  n_row <- nrow(mm_lambda)
+  n_col <- ncol(mm_lambda)
   row1 <- matrix(1.0, n_col, n_col)
   diag(row1) <- 0.0
   col1 <- matrix(1.0, n_row, n_row)
   diag(col1) <- 0.0
 
-  l2 <- LAMBDA * LAMBDA
+  l2 <- mm_lambda * mm_lambda
   lr <- l2 %*% row1
   lc <- col1 %*% l2
 
   f1 <- sum(l2 * lr) / 4
   f2 <- sum(l2 * lc) / 4
 
-  out <- (1 - cf.gamma) * f1 + cf.gamma * f2
+  out <- (1 - cf_gamma) * f1 + cf_gamma * f2
 
   if (grad) {
-    attr(out, "grad") <- ((1 - cf.gamma) * LAMBDA * lr) +
-      (cf.gamma * LAMBDA * lc)
+    attr(out, "grad") <- ((1 - cf_gamma) * mm_lambda * lr) +
+      (cf_gamma * mm_lambda * lc)
   }
 
   out
@@ -107,26 +107,26 @@ lav_matrix_rotate_cf <- function(LAMBDA = NULL, cf.gamma = 0, ...,   # nolint
 # gamma = 1   -> varimax
 # gamma = P/2 -> equamax
 #
-lav_matrix_rotate_oblimin <- function(LAMBDA = NULL, oblimin.gamma = 0, ..., # nolint
+lav_matrix_rotate_oblimin <- function(mm_lambda = NULL, oblimin_gamma = 0, ..., # nolint
                                       grad = FALSE) {
-  n_row <- nrow(LAMBDA)
-  n_col <- ncol(LAMBDA)
+  n_row <- nrow(mm_lambda)
+  n_col <- ncol(mm_lambda)
   row1 <- matrix(1.0, n_col, n_col)
   diag(row1) <- 0.0
 
-  l2 <- LAMBDA * LAMBDA
+  l2 <- mm_lambda * mm_lambda
   lr <- l2 %*% row1
   jp <- matrix(1, n_row, n_row) / n_row
 
   # see Jennrich (2002, p. 11)
-  tmp <- (diag(n_row) - oblimin.gamma * jp) %*% lr
+  tmp <- (diag(n_row) - oblimin_gamma * jp) %*% lr
 
   # same as t( t(L2) - gamma * colMeans(L2) ) %*% ROW1
 
   out <- sum(l2 * tmp) / 4
 
   if (grad) {
-    attr(out, "grad") <- LAMBDA * tmp
+    attr(out, "grad") <- mm_lambda * tmp
   }
 
   out
@@ -137,12 +137,12 @@ lav_matrix_rotate_oblimin <- function(LAMBDA = NULL, oblimin.gamma = 0, ..., # n
 # Carroll (1953); Saunders (1953) Neuhaus & Wrigley (1954); Ferguson (1954)
 # we use here the equivalent 'Ferguson, 1954' variant
 # (See Mulaik 2010, p. 303)
-lav_matrix_rotate_quartimax <- function(LAMBDA = NULL, ..., grad = FALSE) { # nolint
-  l2 <- LAMBDA * LAMBDA
+lav_matrix_rotate_quartimax <- function(mm_lambda = NULL, ..., grad = FALSE) { # nolint
+  l2 <- mm_lambda * mm_lambda
   out <- -1 * sum(l2 * l2) / 4
 
   if (grad) {
-    attr(out, "grad") <- -1 * LAMBDA * l2
+    attr(out, "grad") <- -1 * mm_lambda * l2
   }
 
   out
@@ -154,32 +154,32 @@ lav_matrix_rotate_quartimax <- function(LAMBDA = NULL, ..., grad = FALSE) { # no
 #
 # special case of the Orthomax family (Harman, 1960), where gamma = 1
 # see Jennrich (2001, p. 296)
-lav_matrix_rotate_varimax <- function(LAMBDA = NULL, ..., grad = FALSE) { # nolint
-  l2 <- LAMBDA * LAMBDA
+lav_matrix_rotate_varimax <- function(mm_lambda = NULL, ..., grad = FALSE) { # nolint
+  l2 <- mm_lambda * mm_lambda
   # center L2 column-wise
   c_l2 <- t(t(l2) - colMeans(l2))
   out <- -1 * abs(sum(l2 * c_l2)) / 4 # abs needed?
 
   if (grad) {
-    attr(out, "grad") <- -1 * LAMBDA * c_l2
+    attr(out, "grad") <- -1 * mm_lambda * c_l2
   }
 
   out
 }
 
 # quartimin criterion (part of Carroll's oblimin family
-lav_matrix_rotate_quartimin <- function(LAMBDA = NULL, ..., grad = FALSE) { # nolint
-  n_col <- ncol(LAMBDA)
+lav_matrix_rotate_quartimin <- function(mm_lambda = NULL, ..., grad = FALSE) { # nolint
+  n_col <- ncol(mm_lambda)
   row1 <- matrix(1.0, n_col, n_col)
   diag(row1) <- 0.0
 
-  l2 <- LAMBDA * LAMBDA
+  l2 <- mm_lambda * mm_lambda
   lr <- l2 %*% row1
 
   out <- sum(l2 * lr) / 4
 
   if (grad) {
-    attr(out, "grad") <- LAMBDA * lr
+    attr(out, "grad") <- mm_lambda * lr
   }
 
   out
@@ -188,11 +188,11 @@ lav_matrix_rotate_quartimin <- function(LAMBDA = NULL, ..., grad = FALSE) { # no
 # Browne's (2001) version of Yates (1984) geomin criterion
 #
 # we use the exp/log trick as in Bernaard & Jennrich (2005, p. 687)
-lav_matrix_rotate_geomin <- function(LAMBDA = NULL, geomin_epsilon = 0.01, # nolint
+lav_matrix_rotate_geomin <- function(mm_lambda = NULL, geomin_epsilon = 0.01, # nolint
                                      ..., grad = FALSE) {
-  n_col <- ncol(LAMBDA)
+  n_col <- ncol(mm_lambda)
 
-  l2 <- LAMBDA * LAMBDA
+  l2 <- mm_lambda * mm_lambda
   l2 <- l2 + geomin_epsilon
 
   if (geomin_epsilon < sqrt(.Machine$double.eps)) {
@@ -205,7 +205,7 @@ lav_matrix_rotate_geomin <- function(LAMBDA = NULL, geomin_epsilon = 0.01, # nol
   out <- sum(tmp)
 
   if (grad) {
-    attr(out, "grad") <- (2 / n_col) * LAMBDA / l2 * tmp
+    attr(out, "grad") <- (2 / n_col) * mm_lambda / l2 * tmp
   }
 
   out
@@ -213,8 +213,8 @@ lav_matrix_rotate_geomin <- function(LAMBDA = NULL, geomin_epsilon = 0.01, # nol
 
 # simple entropy
 # seems to only work for orthogonal rotation
-lav_matrix_rotate_entropy <- function(LAMBDA = NULL, ..., grad = FALSE) { # nolint
-  l2 <- LAMBDA * LAMBDA
+lav_matrix_rotate_entropy <- function(mm_lambda = NULL, ..., grad = FALSE) { # nolint
+  l2 <- mm_lambda * mm_lambda
 
   # handle zero elements -> replace by '1', so log(1) == 0
   l2[l2 == 0] <- 1
@@ -222,7 +222,7 @@ lav_matrix_rotate_entropy <- function(LAMBDA = NULL, ..., grad = FALSE) { # noli
   out <- -1 * sum(l2 * log(l2)) / 2
 
   if (grad) {
-    attr(out, "grad") <- -LAMBDA * log(l2) - LAMBDA
+    attr(out, "grad") <- -mm_lambda * log(l2) - mm_lambda
   }
 
   out
@@ -238,10 +238,10 @@ lav_matrix_rotate_entropy <- function(LAMBDA = NULL, ..., grad = FALSE) { # noli
 #
 # works only ok with orthogonal rotation!
 
-lav_matrix_rotate_mccammon <- function(LAMBDA = NULL, ..., grad = FALSE) { # nolint
-  n_col <- ncol(LAMBDA)
-  n_row <- nrow(LAMBDA)
-  l2 <- LAMBDA * LAMBDA
+lav_matrix_rotate_mccammon <- function(mm_lambda = NULL, ..., grad = FALSE) { # nolint
+  n_col <- ncol(mm_lambda)
+  n_row <- nrow(mm_lambda)
+  l2 <- mm_lambda * mm_lambda
 
   # entropy function (Browne, 2001, eq 9)
   f_entropy <- function(x) {
@@ -250,12 +250,12 @@ lav_matrix_rotate_mccammon <- function(LAMBDA = NULL, ..., grad = FALSE) { # nol
 
   # sums of rows/columns/all
   sum_j <- colSums(l2)
-  sum_ <- sum(l2)
+  sum_1 <- sum(l2)
 
 
   q1 <- f_entropy(t(l2) / sum_j) # encouraging columns with few large,
   # and many small elements
-  q2 <- f_entropy(sum_j / sum_) # encouraging equal column sums
+  q2 <- f_entropy(sum_j / sum_1) # encouraging equal column sums
 
   # minimize
   out <- log(q1) - log(q2)
@@ -264,12 +264,12 @@ lav_matrix_rotate_mccammon <- function(LAMBDA = NULL, ..., grad = FALSE) { # nol
     h_1 <- -(log(t(t(l2) / sum_j)) + 1)
     g1 <- t(t(h_1) / sum_j - rowSums(t(l2 * h_1) / (sum_j * sum_j)))
 
-    h <- -(log(sum_j / sum_) + 1)
-    alpha <- as.numeric(h %*% sum_j) / (sum_ * sum_) # paper divides by
+    h <- -(log(sum_j / sum_1) + 1)
+    alpha <- as.numeric(h %*% sum_j) / (sum_1 * sum_1) # paper divides by
     # sum.., not sum..^2??
-    g2 <- matrix(h / sum_ - alpha, n_row, n_col, byrow = TRUE)
+    g2 <- matrix(h / sum_1 - alpha, n_row, n_col, byrow = TRUE)
 
-    attr(out, "grad") <- 2 * LAMBDA * (g1 / q1 - g2 / q2)
+    attr(out, "grad") <- 2 * mm_lambda * (g1 / q1 - g2 / q2)
   }
 
   out
@@ -278,7 +278,7 @@ lav_matrix_rotate_mccammon <- function(LAMBDA = NULL, ..., grad = FALSE) { # nol
 
 # Infomax
 # McKeon (1968, unpublished) and Browne (2001)
-# Treat LAMBDA^2 as a contingency table, and use simplicity function based
+# Treat mm_lambda^2 as a contingency table, and use simplicity function based
 # on tests for association; most effective was LRT for association
 # (see Agresti, 1990, eq 3.13) which is maximized for max simplicity
 #
@@ -292,10 +292,10 @@ lav_matrix_rotate_mccammon <- function(LAMBDA = NULL, ..., grad = FALSE) { # nol
 #
 # Note: typo in Browne (2001), see last  paragraph of Bernaards and
 # Jennrich (2005) page 684
-lav_matrix_rotate_infomax <- function(LAMBDA = NULL, ..., grad = FALSE) { # nolint
-  n_col <- ncol(LAMBDA)
-  n_row <- nrow(LAMBDA)
-  l2 <- LAMBDA * LAMBDA
+lav_matrix_rotate_infomax <- function(mm_lambda = NULL, ..., grad = FALSE) { # nolint
+  n_col <- ncol(mm_lambda)
+  n_row <- nrow(mm_lambda)
+  l2 <- mm_lambda * mm_lambda
 
   # entropy function (Browne, 2001, eq 9)
   f_entropy <- function(x) {
@@ -305,30 +305,30 @@ lav_matrix_rotate_infomax <- function(LAMBDA = NULL, ..., grad = FALSE) { # noli
   # sums of rows/columns/all
   sumi <- rowSums(l2)
   sum_j <- colSums(l2)
-  sum_ <- sum(l2)
+  sum_1 <- sum(l2)
 
-  q1 <- f_entropy(l2 / sum_) # Bernaards & Jennrich version!! (Browne
+  q1 <- f_entropy(l2 / sum_1) # Bernaards & Jennrich version!! (Browne
   # divides by sum.j, like in McCammon)
-  q2 <- f_entropy(sum_j / sum_)
-  q3 <- f_entropy(sumi / sum_)
+  q2 <- f_entropy(sum_j / sum_1)
+  q3 <- f_entropy(sumi / sum_1)
 
   # minimize
   out <- log(n_col) + q1 - q2 - q3
 
   if (grad) {
-    h <- -(log(l2 / sum_) + 1)
-    alpha <- sum(l2 * h) / (sum_ * sum_)
-    g1 <- h / sum_ - alpha
+    h <- -(log(l2 / sum_1) + 1)
+    alpha <- sum(l2 * h) / (sum_1 * sum_1)
+    g1 <- h / sum_1 - alpha
 
-    hj <- -(log(sum_j / sum_) + 1)
-    alphaj <- as.numeric(hj %*% sum_j) / (sum_ * sum_)
-    g2 <- matrix(hj, n_row, n_col, byrow = TRUE) / sum_ - alphaj
+    hj <- -(log(sum_j / sum_1) + 1)
+    alphaj <- as.numeric(hj %*% sum_j) / (sum_1 * sum_1)
+    g2 <- matrix(hj, n_row, n_col, byrow = TRUE) / sum_1 - alphaj
 
-    hi <- -(log(sumi / sum_) + 1)
-    alphai <- as.numeric(sumi %*% hi) / (sum_ * sum_)
-    g3 <- matrix(hi, n_row, n_col) / sum_ - alphai
+    hi <- -(log(sumi / sum_1) + 1)
+    alphai <- as.numeric(sumi %*% hi) / (sum_1 * sum_1)
+    g3 <- matrix(hi, n_row, n_col) / sum_1 - alphai
 
-    attr(out, "grad") <- 2 * LAMBDA * (g1 - g2 - g3)
+    attr(out, "grad") <- 2 * mm_lambda * (g1 - g2 - g3)
   }
 
   out
@@ -338,15 +338,15 @@ lav_matrix_rotate_infomax <- function(LAMBDA = NULL, ..., grad = FALSE) { # noli
 # Harman, 1976; Saunders, 1961
 #
 # for orthogonal rotation, oblimax is equivalent to quartimax
-lav_matrix_rotate_oblimax <- function(LAMBDA = NULL, ..., grad = FALSE) { # nolint
-  l2 <- LAMBDA * LAMBDA
+lav_matrix_rotate_oblimax <- function(mm_lambda = NULL, ..., grad = FALSE) { # nolint
+  l2 <- mm_lambda * mm_lambda
 
   # minimize version
   out <- -log(sum(l2 * l2)) + 2 * log(sum(l2))
 
   if (grad) {
-    attr(out, "grad") <- (-4 * l2 * LAMBDA / (sum(l2 * l2))
-      + 4 * LAMBDA / (sum(l2)))
+    attr(out, "grad") <- (-4 * l2 * mm_lambda / (sum(l2 * l2))
+      + 4 * mm_lambda / (sum(l2)))
   }
 
   out
@@ -356,8 +356,8 @@ lav_matrix_rotate_oblimax <- function(LAMBDA = NULL, ..., grad = FALSE) { # noli
 # Bentler (1977)
 #
 #
-lav_matrix_rotate_bentler <- function(LAMBDA = NULL, ..., grad = FALSE) { # nolint
-  l2 <- LAMBDA * LAMBDA
+lav_matrix_rotate_bentler <- function(mm_lambda = NULL, ..., grad = FALSE) { # nolint
+  l2 <- mm_lambda * mm_lambda
 
   l2t_l2 <- crossprod(l2)
   l2t_l2_inv <- lav_matrix_symmetric_inverse(s = l2t_l2, logdet = TRUE)
@@ -371,7 +371,7 @@ lav_matrix_rotate_bentler <- function(LAMBDA = NULL, ..., grad = FALSE) { # noli
   out <- -(l2t_l2_logdet - diag_logdet) / 4
 
   if (grad) {
-    attr(out, "grad") <- -LAMBDA * (l2 %*% (l2t_l2_inv - diag_inv))
+    attr(out, "grad") <- -mm_lambda * (l2 %*% (l2t_l2_inv - diag_inv))
   }
 
   out
@@ -386,34 +386,34 @@ lav_matrix_rotate_bentler <- function(LAMBDA = NULL, ..., grad = FALSE) { # noli
 #   (it removes the minor factors)
 # - tandomII is used for final rotation
 #
-lav_matrix_rotate_tandem1 <- function(LAMBDA, ..., grad = FALSE) { # nolint
-  l2 <- LAMBDA * LAMBDA
-  ll <- tcrossprod(LAMBDA)
+lav_matrix_rotate_tandem1 <- function(mm_lambda, ..., grad = FALSE) { # nolint
+  l2 <- mm_lambda * mm_lambda
+  ll <- tcrossprod(mm_lambda)
   ll2 <- ll * ll
 
   # minimize version
   out <- -1 * sum(l2 * (ll2 %*% l2))
 
   if (grad) {
-    tmp1 <- 4 * LAMBDA * (ll2 %*% l2)
-    tmp2 <- 4 * (ll * (l2 %*% t(l2))) %*% LAMBDA
+    tmp1 <- 4 * mm_lambda * (ll2 %*% l2)
+    tmp2 <- 4 * (ll * (l2 %*% t(l2))) %*% mm_lambda
     attr(out, "grad") <- -tmp1 - tmp2
   }
 
   out
 }
 
-lav_matrix_rotate_tandem2 <- function(LAMBDA, ..., grad = FALSE) { # nolint
-  l2 <- LAMBDA * LAMBDA
-  ll <- tcrossprod(LAMBDA)
+lav_matrix_rotate_tandem2 <- function(mm_lambda, ..., grad = FALSE) { # nolint
+  l2 <- mm_lambda * mm_lambda
+  ll <- tcrossprod(mm_lambda)
   ll2 <- ll * ll
 
   # minimize version
   out <- sum(l2 * ((1 - ll2) %*% l2))
 
   if (grad) {
-    tmp1 <- 4 * LAMBDA * ((1 - ll2) %*% l2)
-    tmp2 <- 4 * (ll * tcrossprod(l2, l2)) %*% LAMBDA
+    tmp1 <- 4 * mm_lambda * ((1 - ll2) %*% l2)
+    tmp2 <- 4 * (ll * tcrossprod(l2, l2)) %*% mm_lambda
     attr(out, "grad") <- tmp1 - tmp2
   }
 
@@ -431,9 +431,9 @@ lav_matrix_rotate_tandem2 <- function(LAMBDA, ..., grad = FALSE) { # nolint
 # may be viewed as partially specified target rotation with
 # dynamically chosen weights
 #
-lav_matrix_rotate_simplimax <- function(LAMBDA = NULL, k = nrow(LAMBDA), # nolint
+lav_matrix_rotate_simplimax <- function(mm_lambda = NULL, k = nrow(mm_lambda), # nolint
                                         ..., grad = FALSE) {
-  l2 <- LAMBDA * LAMBDA
+  l2 <- mm_lambda * mm_lambda
 
   # 'k' smallest element of L2
   small_element <- sort(l2)[k]
@@ -445,7 +445,7 @@ lav_matrix_rotate_simplimax <- function(LAMBDA = NULL, k = nrow(LAMBDA), # nolin
   out <- sum(l2 * id)
 
   if (grad) {
-    attr(out, "grad") <- 2 * id * LAMBDA
+    attr(out, "grad") <- 2 * id * mm_lambda
   }
 
   out
@@ -455,15 +455,15 @@ lav_matrix_rotate_simplimax <- function(LAMBDA = NULL, k = nrow(LAMBDA), # nolin
 # target rotation
 # Harman, 1976
 #
-# LAMBDA is rotated toward a specified target matrix 'target'
+# mm_lambda is rotated toward a specified target matrix 'target'
 #
 # Note: 'target' must be fully specified; if there are any NAs
 #        use lav_matrix_rotate_pst() instead
 #
-lav_matrix_rotate_target <- function(LAMBDA = NULL, target = NULL,  # nolint
+lav_matrix_rotate_target <- function(mm_lambda = NULL, target = NULL,  # nolint
                                      ..., grad = FALSE) {
   # squared difference
-  diff_1 <- LAMBDA - target
+  diff_1 <- mm_lambda - target
   diff2 <- diff_1 * diff_1
 
   out <- sum(diff2, na.rm = TRUE)
@@ -483,19 +483,19 @@ lav_matrix_rotate_target <- function(LAMBDA = NULL, target = NULL,  # nolint
 # Browne 1972a, 1972b
 #
 # a pre-specified weight matrix W with ones/zeroes determines
-# which elements of (LAMBDA - target) are used by the rotation criterion
+# which elements of (mm_lambda - target) are used by the rotation criterion
 #
 # if 'target' contains NAs, they should correspond to '0' values in the
-# target.mask matrix
+# target_mask matrix
 #
-lav_matrix_rotate_pst <- function(LAMBDA = NULL, target = NULL,            # nolint
-                                  target.mask = NULL, ..., grad = FALSE) { # nolint
-  # mask target+LAMBDA
-  target <- target.mask * target
-  LAMBDA <- target.mask * LAMBDA              # nolint
+lav_matrix_rotate_pst <- function(mm_lambda = NULL, target = NULL,            # nolint
+                                  target_mask = NULL, ..., grad = FALSE) { # nolint
+  # mask target+mm_lambda
+  target <- target_mask * target
+  mm_lambda <- target_mask * mm_lambda              # nolint
 
   # squared difference
-  diff_1 <- LAMBDA - target
+  diff_1 <- mm_lambda - target
   diff2 <- diff_1 * diff_1
 
   # minimize
@@ -516,12 +516,12 @@ lav_matrix_rotate_pst <- function(LAMBDA = NULL, target = NULL,            # nol
 #
 # Jennrich & Bentler 2011
 #
-lav_matrix_rotate_biquartimin <- function(LAMBDA, ..., grad = FALSE) { # nolint
+lav_matrix_rotate_biquartimin <- function(mm_lambda, ..., grad = FALSE) { # nolint
   # see Matlab code page 549
-  stopifnot(ncol(LAMBDA) > 1L)
+  stopifnot(ncol(mm_lambda) > 1L)
 
   # remove first column
-  lambda_group <- LAMBDA[, -1, drop = FALSE]
+  lambda_group <- mm_lambda[, -1, drop = FALSE]
 
   # apply quartimin on the 'group' part
   out <- lav_matrix_rotate_quartimin(lambda_group, ..., grad = grad)
@@ -539,16 +539,16 @@ lav_matrix_rotate_biquartimin <- function(LAMBDA, ..., grad = FALSE) { # nolint
 #
 # Jennrich & Bentler 2012
 #
-lav_matrix_rotate_bigeomin <- function(LAMBDA, geomin_epsilon = 0.01, ..., # nolint
+lav_matrix_rotate_bigeomin <- function(mm_lambda, geomin_epsilon = 0.01, ..., # nolint
                                        grad = FALSE) {
-  stopifnot(ncol(LAMBDA) > 1L)
+  stopifnot(ncol(mm_lambda) > 1L)
 
   # remove first column
-  lambda_group <- LAMBDA[, -1, drop = FALSE]
+  lambda_group <- mm_lambda[, -1, drop = FALSE]
 
   # apply geomin on the 'group' part
   out <- lav_matrix_rotate_geomin(lambda_group,
-    geomin.epsilon = geomin_epsilon, ...,
+    geomin_epsilon = geomin_epsilon, ...,
     grad = grad
   )
 
@@ -581,7 +581,7 @@ lav_matrix_rotate_mg_agreement <- function(lambda_list, method_fname = "geomin",
   q_group <- numeric(ngroups)
   for (g in seq_len(ngroups)) {
     q_group[g] <- do.call(method_fname, c(
-      list(LAMBDA = lambda_list[[g]]),
+      list(mm_lambda = lambda_list[[g]]),
       method_args, list(grad = FALSE)
     ))
   }
@@ -615,11 +615,11 @@ lav_matrix_rotate_mg_agreement <- function(lambda_list, method_fname = "geomin",
 
 # gradient check
 ilav_matrix_rotate_grad_test <- function(crit = NULL, ...,
-                                         LAMBDA = NULL,              # nolint
+                                         mm_lambda = NULL,
                                          n_row = 20L, n_col = 5L) {
   # test matrix
-  if (is.null(LAMBDA)) {
-    LAMBDA <- matrix(rnorm(n_row * n_col), n_row, n_col)             # nolint
+  if (is.null(mm_lambda)) {
+    mm_lambda <- matrix(rnorm(n_row * n_col), n_row, n_col)
   }
 
   ff <- function(x, ...) {
@@ -628,13 +628,13 @@ ilav_matrix_rotate_grad_test <- function(crit = NULL, ...,
   }
 
   gq1 <- matrix(
-    numDeriv::grad(func = ff, x = as.vector(LAMBDA), ...),
+    numDeriv::grad(func = ff, x = as.vector(mm_lambda), ...),
     n_row, n_col
   )
-  gq2 <- attr(crit(LAMBDA, ..., grad = TRUE), "grad")
+  gq2 <- attr(crit(mm_lambda, ..., grad = TRUE), "grad")
 
   if (lav_verbose()) {
-    print(list(LAMBDA = LAMBDA, GQ1 = gq1, GQ2 = gq2))
+    print(list(mm_lambda = mm_lambda, GQ1 = gq1, GQ2 = gq2))
   }
 
   all.equal(gq1, gq2, tolerance = 1e-07)

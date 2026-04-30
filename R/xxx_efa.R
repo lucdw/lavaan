@@ -28,6 +28,7 @@ efa <- function(data = NULL,              # nolint start
 
   if (is.list(rotation)) {
     rotation_args <- modifyList(list(), rotation)
+    names(rotation_args) <- lav_snake_case(names(rotation_args))
     rotation <- rotation[[1L]]
   }
 

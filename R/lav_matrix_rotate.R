@@ -4,7 +4,7 @@
 # YR 21 April 2019 -- pairwise rotation algorithm
 # YR 11 May   2020 -- order.idx is done in rotation matrix
 #                     (suggested by Florian Scharf)
-# YR 02 June  2024 -- add group argument, so target and target.mask can
+# YR 02 June  2024 -- add group argument, so target and target_mask can
 #                     be a list
 
 # main function to rotate a single matrix 'A'
@@ -12,13 +12,13 @@ lav_matrix_rotate <- function(a = NULL, # original matrix
                               orthogonal = FALSE, # default is oblique
                               method = "geomin", # default rot method
                               method_args = list(
-                                geomin.epsilon = 0.01,
-                                orthomax.gamma = 1,
-                                cf.gamma = 0,
-                                oblimin.gamma = 0,
-                                promax.kappa = 4,
+                                geomin_epsilon = 0.01,
+                                orthomax_gamma = 1,
+                                cf_gamma = 0,
+                                oblimin_gamma = 0,
+                                promax_kappa = 4,
                                 target = matrix(0, 0, 0),
-                                target.mask = matrix(0, 0, 0)
+                                target_mask = matrix(0, 0, 0)
                               ),
                               init_rot = NULL, # initial rotation matrix
                               init_rot_check = TRUE, # check if init ROT is ok
@@ -44,9 +44,9 @@ lav_matrix_rotate <- function(a = NULL, # original matrix
   m <- ncol(a)
   if (m < 2L) { # single dimension
     res <- list(
-      LAMBDA = a, PHI = matrix(1, 1, 1), ROT = matrix(1, 1, 1),
+      mm_lambda = a, PHI = matrix(1, 1, 1), ROT = matrix(1, 1, 1),
       orthogonal = orthogonal, method = "none",
-      method.args = list(), row.weights = "none",
+      method.args = list(), row_weights = "none",
       algorithm = "none", iter = 0L, converged = TRUE,
       method.value = 0
     )
@@ -94,7 +94,7 @@ lav_matrix_rotate <- function(a = NULL, # original matrix
     "cf-parsimax", "cf-facparsim"
   )) {
     method_fname <- "lav_matrix_rotate_cf"
-    method_args$cf.gamma <- switch(method,
+    method_args$cf_gamma <- switch(method,
       "cf-quartimax" = 0,
       "cf-varimax"   = 1 / p,
       "cf-equamax"   = m / (2 * p),
@@ -132,16 +132,16 @@ lav_matrix_rotate <- function(a = NULL, # original matrix
     }
   }
   if (method == "pst") {
-    target_mask <- method_args$target.mask
+    target_mask <- method_args$target_mask
   if (is.list(target_mask)) {
-    method_args$target.mask <- target_mask <- target_mask[[group]]
+    method_args$target_mask <- target_mask <- target_mask[[group]]
   }
-    # check dimension of target.mask/A
+    # check dimension of target_mask/A
     if (nrow(target_mask) != nrow(a)) {
-      lav_msg_stop(gettext("nrow(target.mask) != nrow(A)"))
+      lav_msg_stop(gettext("nrow(target_mask) != nrow(A)"))
     }
     if (ncol(target_mask) != ncol(a)) {
-      lav_msg_stop(gettext("col(target.mask) != ncol(A)"))
+      lav_msg_stop(gettext("col(target_mask) != ncol(A)"))
     }
   }
   # we keep this here, so lav_matrix_rotate() can be used independently
@@ -150,7 +150,7 @@ lav_matrix_rotate <- function(a = NULL, # original matrix
     method_fname <- "lav_matrix_rotate_pst"
     target_mask <- matrix(1, nrow = nrow(target), ncol = ncol(target))
     target_mask[is.na(target)] <- 0
-    method_args$target.mask <- target_mask
+    method_args$target_mask <- target_mask
   }
 
   # set orthogonal option
@@ -176,7 +176,7 @@ lav_matrix_rotate <- function(a = NULL, # original matrix
     }
   }
 
-  # set row.weights
+  # set row_weights
   row_weights <- tolower(row_weights)
   if (row_weights == "default") {
     # the default is "none", except for varimax
@@ -211,7 +211,7 @@ lav_matrix_rotate <- function(a = NULL, # original matrix
   } else if (row_weights == "cureton-mulaik") {
     weights <- lav_matrix_rotate_cm_weights(a)
   } else {
-    lav_msg_stop(gettext("row.weights can be none, kaiser or cureton-mulaik"))
+    lav_msg_stop(gettext("row_weights can be none, kaiser or cureton-mulaik"))
   }
   a <- a * weights
 
@@ -307,12 +307,12 @@ lav_matrix_rotate <- function(a = NULL, # original matrix
 
   # final rotation
   if (orthogonal) {
-    # LAMBDA <- A %*% solve(t(ROT))
+    # mm_lambda <- A %*% solve(t(ROT))
     # note: when ROT is orthogonal, solve(t(ROT)) == ROT
     mm_lambda <- a %*% rot
     phi <- diag(ncol(mm_lambda)) # correlation matrix == I
   } else {
-    # LAMBDA <- A %*% solve(t(ROT))
+    # mm_lambda <- A %*% solve(t(ROT))
     mm_lambda <- t(solve(rot, t(a)))
     phi <- crossprod(rot) # correlation matrix
   }
@@ -330,7 +330,7 @@ lav_matrix_rotate <- function(a = NULL, # original matrix
     xx <- stats::varimax(x = mm_lambda, normalize = normalize_flag)
 
     # promax
-    kappa <- method_args$promax.kappa
+    kappa <- method_args$promax_kappa
     out <- lav_matrix_rotate_promax(
       x = xx$loadings, m = kappa,
       varimax_rot = xx$rotmat
@@ -401,9 +401,9 @@ lav_matrix_rotate <- function(a = NULL, # original matrix
 
   # 6. return results as a list
   res <- list(
-    LAMBDA = mm_lambda, PHI = phi, ROT = rot, order.idx = order_idx,
+    mm_lambda = mm_lambda, PHI = phi, ROT = rot, order.idx = order_idx,
     orthogonal = orthogonal, method = method,
-    method.args = method_args, row.weights = row_weights
+    method_args = method_args, row_weights = row_weights
   )
 
   # add method info
@@ -451,17 +451,17 @@ lav_matrix_rotate_gpa <- function(a = NULL, # original matrix
     mm_lambda <- t(solve(rot, at))
   }
 
-  # using the current LAMBDA, evaluate the user-specified
+  # using the current mm_lambda, evaluate the user-specified
   # rotation criteron; return Q (the criterion) and its gradient Gq
   q_1 <- do.call(
     method_fname,
-    c(list(LAMBDA = mm_lambda), method_args, list(grad = TRUE))
+    c(list(mm_lambda = mm_lambda), method_args, list(grad = TRUE))
   )
   gq <- attr(q_1, "grad")
   attr(q_1, "grad") <- NULL
   q_current <- q_1
 
-  # compute gradient GRAD of f() at ROT from the gradient Gq of Q at LAMBDA
+  # compute gradient GRAD of f() at ROT from the gradient Gq of Q at mm_lambda
   # in a manner appropiate for orthogonal or oblique rotation
   if (orthogonal) {
     grad <- crossprod(a, gq)
@@ -534,7 +534,7 @@ lav_matrix_rotate_gpa <- function(a = NULL, # original matrix
 
       # evaluate criterion
       q_new <- do.call(method_fname, c(
-        list(LAMBDA = mm_lambda),
+        list(mm_lambda = mm_lambda),
         method_args, list(grad = TRUE)
       ))
       gq <- attr(q_new, "grad")
@@ -608,7 +608,7 @@ lav_matrix_rotate_pairwise <- function(a = NULL, # original matrix
   # number of columns
   m <- ncol(a)
 
-  # initial LAMBDA + PHI
+  # initial mm_lambda + PHI
   if (is.null(init_rot)) {
     mm_lambda <- a
     if (!orthogonal) {
@@ -623,10 +623,10 @@ lav_matrix_rotate_pairwise <- function(a = NULL, # original matrix
     }
   }
 
-  # using the current LAMBDA, evaluate the user-specified
+  # using the current mm_lambda, evaluate the user-specified
   # rotation criteron; return Q (the criterion) only
   q_current <- do.call(method_fname, c(
-    list(LAMBDA = mm_lambda),
+    list(mm_lambda = mm_lambda),
     method_args, list(grad = FALSE)
   ))
 
@@ -660,7 +660,7 @@ lav_matrix_rotate_pairwise <- function(a = NULL, # original matrix
 
     # evaluate criterion
     q_1 <- do.call(method_fname, c(
-      list(LAMBDA = mm_lambda),
+      list(mm_lambda = mm_lambda),
       method_args, list(grad = FALSE)
     ))
 
@@ -686,7 +686,7 @@ lav_matrix_rotate_pairwise <- function(a = NULL, # original matrix
 
     # evaluate criterion
     q_1 <- do.call(method_fname, c(
-      list(LAMBDA = mm_lambda),
+      list(mm_lambda = mm_lambda),
       method_args, list(grad = FALSE)
     ))
     q_1
@@ -756,7 +756,7 @@ lav_matrix_rotate_pairwise <- function(a = NULL, # original matrix
 
     # check for convergence
     q_current <- do.call(method_fname, c(
-      list(LAMBDA = mm_lambda),
+      list(mm_lambda = mm_lambda),
       method_args, list(grad = FALSE)
     ))
 

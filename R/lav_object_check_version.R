@@ -562,15 +562,15 @@ lav_object_check_version <- function(object = NULL) {
   new_options$mega.h1.information <- "unstructured"
 
   # 0.6-22
-  if (is.null(new_options$rotation.args$mg.agreement)) {
-    new_options$rotation.args$mg.agreement <- FALSE
-    new_options$rotation.args$mg.agreement.weight <- 0.5
-    new_options$rotation.args$mg.agreement.method <- "pairwise"
-    new_options$rotation.args$mg.agreement.crit <- "procrustes"
+  if (is.null(new_options$rotation.args$mg_agreement)) {
+    new_options$rotation.args$mg_agreement <- FALSE
+    new_options$rotation.args$mg_agreement_weight <- 0.5
+    new_options$rotation.args$mg_agreement_method <- "pairwise"
+    new_options$rotation.args$mg_agreement_crit <- "procrustes"
 
   }
-  if (is.null(new_options$rotation.args$mg.agreement.weight)) {
-    new_options$rotation.args$mg.agreement.weight <- 0.5
+  if (is.null(new_options$rotation.args$mg_agreement_weight)) {
+    new_options$rotation.args$mg_agreement_weight <- 0.5
   }
 
   lavobject@Options <- new_options

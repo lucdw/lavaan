@@ -25,7 +25,7 @@ lav_cfa_lambda2thetapsi <- function(lambda = NULL, s = NULL, s_inv = NULL,
     }
     t_lw <- crossprod(mm_lambda, m_w)
     m <- solve(t_lw %*% mm_lambda, t_lw) # GLS mapping
-    # d <- W %*% LAMBDA %*% M # symmmetric
+    # d <- W %*% mm_lambda %*% M # symmmetric
     d <- crossprod(m, t_lw)
     # theta <- solve(W*W - d*d, diag(W %*% S %*% W - d %*% S %*% d))
     theta <- try(solve(m_w * m_w - d * d, diag(m_w - d)), # because W == S^{-1}
