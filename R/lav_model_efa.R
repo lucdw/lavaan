@@ -66,7 +66,7 @@ lav_model_efa_rotate_x <- function(x, lavmodel = NULL, lavoptions = NULL,
   if (lavmodel@ngroups > 1) {
     if ("loadings" %in% lavoptions$group.equal) {
       mg_group_equal_flag <- TRUE
-    } else if (ropts$mg.agreement) {
+    } else if (ropts$mg_agreement) {
       mg_agreement_flag <- TRUE
     }
   }

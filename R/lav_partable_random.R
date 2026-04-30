@@ -1,7 +1,7 @@
 # create random starting values starting from a parameter table
 # - using the lower/upper bounds and runif() for factor loadings
 #   and variances
-# - using runif(,-1,+1) for correlations; rescale using variances
+# - using runif(,-0.5,+0.5) for correlations; rescale using variances
 # - check if Sigma.hat is PD; if not, try again
 #
 # YR 26 Feb 2024
